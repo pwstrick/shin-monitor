@@ -1,0 +1,31 @@
+<!--
+ * @Author: strick
+ * @LastEditors: strick
+ * @Date: 2023-01-13 16:32:08
+ * @LastEditTime: 2023-01-13 18:28:36
+ * @Description: 监控打印
+ * @FilePath: /web/shin-monitor/demo/console.html
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>监控打印</title>
+</head>
+<body>
+    <script src="../dist/shin.aio.js"></script>
+    <script>
+        shin.setParams({
+          token: 'pwstrick',
+          crash: {
+            isOpen: false
+          },
+          console: {
+            isOpen: true,
+            isFilterFunc: (desc) => desc && desc.indexOf('Agora-SDK') >= 0
+          }
+        });
+        console.log('test', 123);
+    </script>
+</body>
+</html>

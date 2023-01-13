@@ -1,0 +1,34 @@
+<!--
+ * @Author: strick
+ * @LastEditors: strick
+ * @Date: 2023-01-13 16:32:08
+ * @LastEditTime: 2023-01-13 18:28:31
+ * @Description: 监控事件
+ * @FilePath: /web/shin-monitor/demo/event.html
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>监控事件</title>
+</head>
+<body>
+    <button>点击</button>
+    <div style="margin-top: 10px">普通元素</div>
+    <script src="../dist/shin.aio.js"></script>
+    <script>
+        shin.setParams({
+          token: 'pwstrick',
+          crash: {
+            isOpen: false
+          },
+          event: {
+            isFilterClickFunc: (node) => {
+                const nodeName = node.nodeName.toLowerCase();
+                return nodeName !== 'a' && nodeName !== 'button' && nodeName !== 'li';
+            }
+          }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!--
+ * @Author: strick
+ * @LastEditors: strick
+ * @Date: 2023-01-13 16:32:08
+ * @LastEditTime: 2023-01-13 22:36:06
+ * @Description: 监控Ajax
+ * @FilePath: /web/shin-monitor/demo/ajax.html
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>监控Ajax</title>
+</head>
+<body>
+    <script src="../dist/shin.aio.js"></script>
+    <script>
+        shin.setParams({
+          token: 'pwstrick',
+          record: {
+            isOpen: false
+          },
+          crash: {
+            isOpen: false
+          },
+          ajax: {
+            isFilterSendFunc: (req) => {
+              return req.status >= 500 || req.ajax.url === '/user';
+            }
+          }
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
+    <script>
+        axios.get('/demo/data.json').then(response => console.log(response.data))
+    </script>
+</body>
+</html>

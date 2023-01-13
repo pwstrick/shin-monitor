@@ -1,0 +1,11 @@
+{
+    "name": "shin-monitor",
+    "npmname": "shin-monitor",
+    "umdname": "shin-monitor",
+    "username": "pwstrick",
+    "type": "ts",
+    "module": "umd,esm,commonjs",
+    "test": "mocha",
+    "lang": "zh",
+    "version": "1.6.0"
+}
