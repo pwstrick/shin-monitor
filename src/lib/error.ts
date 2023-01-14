@@ -2,11 +2,11 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 14:21:36
- * @LastEditTime: 2023-01-13 22:42:51
+ * @LastEditTime: 2023-01-14 17:06:11
  * @Description: 监控各类错误
  * @FilePath: /web/shin-monitor/src/lib/error.ts
  */
-import { TypeShinParams, TypeCrashPrams, TypeSendBody, TypeAjaxDesc, 
+import { TypeShinParams, TypeSendBody, TypeAjaxDesc, 
   TypeErrorData, TypeWhiteScreen, TypeWhiteHTMLNode, TypeSendParams } from '../typings';
 import { removeQuote, CONSTANT } from '../utils';
 import Http from './http';
@@ -205,10 +205,9 @@ class ErrorMonitor {
   }
   /**
    * 监控页面奔溃情况
-   * @param param 
    */
-  public monitorCrash(param: TypeCrashPrams): void {
-    const { isOpen, validateFunc } = param;
+  public monitorCrash(): void {
+    const { isOpen, validateFunc } = this.params.crash;
     if (!isOpen) { return; }
     const HEARTBEAT_INTERVAL = 5 * 1000; // 每五秒发一次心跳
     const crashHeartbeat = (): void => {
@@ -330,6 +329,22 @@ class ErrorMonitor {
         _vueConfigErrorHandler.call(err, vm, info);
       }
     };
+  }
+  /**
+   * 在 load 事件中，监控奔溃
+   * 该事件不可取消，也不会冒泡
+   */
+  public registerLoadEvent(): void {
+    window.addEventListener('load', (): void => {
+      /**
+       * 监控页面奔溃情况
+       * 原先是在 DOMContentLoaded 事件内触发，经测试发现，当因为脚本错误出现白屏时，两个事件的触发时机会很接近
+       * 在线上监控时发现会有一些误报，HTML是有内容的，那很可能是 DOMContentLoaded 触发时，页面内容还没渲染好
+       */
+      setTimeout((): void => {
+        this.monitorCrash();
+      }, 1000);
+    });
   }
 }
 
