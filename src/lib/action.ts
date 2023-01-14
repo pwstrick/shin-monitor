@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 14:24:20
- * @LastEditTime: 2023-01-13 22:45:35
+ * @LastEditTime: 2023-01-14 20:08:16
  * @Description: 用户行为监控
  * @FilePath: /web/shin-monitor/src/lib/action.ts
  */
@@ -180,7 +180,7 @@ class ActionMonitor {
       return req;
     };
     const monitorXHR = (req: TypeAjaxRequest ): void => {
-      req.ajax = {};
+      req.ajax = {} as any;
       const self = this;
       let start: number;    //开始时间
       req.addEventListener('readystatechange', function (): void {

@@ -1,0 +1,32 @@
+<!--
+ * @Author: strick
+ * @LastEditors: strick
+ * @Date: 2023-01-13 16:32:08
+ * @LastEditTime: 2023-01-14 20:59:26
+ * @Description: 性能监控
+ * @FilePath: /web/shin-monitor/demo/performance.html
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>监控路由</title>
+    <script src="../dist/shin.aio.js"></script>
+    <script>
+        shin.setParams({
+          token: 'pwstrick',
+          pkey: '7c891ae43d330f73',
+          rate: 10,
+          record: {
+            isOpen: false
+          },
+          crash: {
+            isOpen: false
+          }
+        });
+    </script>
+</head>
+<body>
+    <img src="//www.baidu.com/img/flexible/logo/plus_logo_web_2.png" />
+</body>
+</html>

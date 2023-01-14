@@ -2,11 +2,13 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 18:18:45
- * @LastEditTime: 2023-01-13 16:10:33
+ * @LastEditTime: 2023-01-14 20:34:49
  * @Description: 通信
  * @FilePath: /web/shin-monitor/src/lib/http.ts
  */
-import { TypeShinParams, TypeSendBody, TypeSendParams } from '../typings';
+import { TypeShinParams, TypeSendBody, TypeSendParams, 
+  TypeSendResource, TypeCaculateTiming } from '../typings';
+import { rounded, randomNum } from '../utils';
 
 type ParamsCallback = (data: TypeSendParams, body: TypeSendBody) => void;
 
@@ -66,6 +68,42 @@ class Http {
       // },
       body: JSON.stringify(body),
     });
+  }
+  /**
+   * 组装性能变量
+   */
+  private paramifyPerformance(obj: TypeCaculateTiming): string {
+    obj.token = this.params.token;
+    obj.pkey = this.params.pkey;
+    obj.identity = this.getIdentity();
+    obj.referer = location.href; // 来源地址
+    // 静态资源列表
+    const resources = performance.getEntriesByType('resource');
+    const newResources: TypeSendResource[] = [];
+    resources && resources.forEach((value: PerformanceResourceTiming): void => {
+      // 过滤 fetch 请求
+      if(value.initiatorType === 'fetch') return;
+      // 只存储 1 分钟内的资源
+      if(value.startTime > 60000) return;
+      newResources.push({
+        name: value.name,
+        duration: rounded(value.duration),
+        startTime: rounded(value.startTime),
+      });
+    });
+    obj.resource = newResources;
+    return JSON.stringify(obj);
+  }
+  /**
+   * 发送 64KB 以内的性能数据
+   */
+  public sendPerformance(data: TypeCaculateTiming): void {
+    // 如果传了数据就使用该数据，否则读取性能参数，并格式化为字符串
+    var str = this.paramifyPerformance(data);
+    var rate = randomNum(10, 1); // 选取1~10之间的整数
+    if (this.params.rate >= rate && this.params.pkey) {
+      navigator.sendBeacon(this.params.psrc, str);
+    }
   }
 }
 export default Http;

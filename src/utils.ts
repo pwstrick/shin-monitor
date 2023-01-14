@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 11:19:52
- * @LastEditTime: 2023-01-13 21:27:46
+ * @LastEditTime: 2023-01-14 18:57:32
  * @Description: 工具函数，与业务解耦
  * @FilePath: /web/shin-monitor/src/utils.ts
  */
@@ -49,7 +49,7 @@ export function randomNum(max: number, min: number): number {
  * @param number 数值
  * @param decimal 要舍去的位数
  */
-export function rounded(number: number, decimal: number): number {
+export function rounded(number: number, decimal?: number): number {
   return parseFloat(number.toFixed(decimal));
 }
   

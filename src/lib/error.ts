@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 14:21:36
- * @LastEditTime: 2023-01-14 17:06:11
+ * @LastEditTime: 2023-01-14 19:08:26
  * @Description: 监控各类错误
  * @FilePath: /web/shin-monitor/src/lib/error.ts
  */
@@ -241,7 +241,6 @@ class ErrorMonitor {
             prompt: '页面没有高度',
             url: location.href,
             html: currentDiv ? removeQuote(currentDiv.innerHTML) : '',
-            //   timestamp: calcCurrentTime(),  TODO
             fontSize: document.documentElement.style.fontSize,  // 根节点的字体大小
             nodes: whiteObj.nodes
           },

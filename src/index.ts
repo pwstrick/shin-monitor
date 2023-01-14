@@ -2,28 +2,19 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 10:17:17
- * @LastEditTime: 2023-01-14 18:42:50
+ * @LastEditTime: 2023-01-14 20:59:22
  * @Description: 入口，自动初始化
  * @FilePath: /web/shin-monitor/src/index.ts
  */
 import ErrorMonitor from './lib/error';
 import ActionMonitor from './lib/action';
+import PerformanceMonitor from './lib/performance';
+
 import { TypeShinParams } from './typings';
 /**
  * 默认属性
  */
 const defaults: TypeShinParams = {
-//   
-//   lcp: {
-//     time: 0,    // 时间
-//     url: '',    // 资源地址
-//     element: '' // 参照的元素
-//   },         // 最大内容可见的对象，time：时间 ms，url：参照的资源地址
-//   fmp: {
-//     time: 0,
-//     element: ''
-//   },  // 首屏最有意义的对象
-//   fid: 0,   // 用户第一次与页面交互（例如当他们单击链接、点按按钮等操作）直到浏览器对交互作出响应的时间
   refer: location.href,     // 上一页地址
   record: {
     isOpen: true,           // 是否打开录像
@@ -51,7 +42,7 @@ const defaults: TypeShinParams = {
   psrc: '//127.0.0.1:3000/pe.gif',      // 请求发送数据的性能地址
   pkey: '',         // 性能监控的项目key
   subdir: '',       // 一个项目下的子目录
-  rate: 5,          // 随机采样率，用于性能搜集
+  rate: 5,          // 随机采样率，用于性能搜集，范围是 1~10，10 表示百分百发送
   version: '',      // 版本，便于追查出错源
   identity: {
     value: '',          // 自定义的身份信息字段
@@ -93,22 +84,19 @@ function setParams(params: TypeShinParams): TypeShinParams {
   shin.reactError = error.reactError.bind(error);   // 对外提供 React 的错误处理
   shin.vueError = error.vueError.bind(error);       // 对外提供 Vue 的错误处理
 
+  // 启动性能监控
+  const pe = new PerformanceMonitor(combination);
+  pe.observerLCP();      // 监控 LCP
+  pe.observerFID();      // 监控 FID
+  pe.registerLoadAndHideEvent();    // 注册 load 和页面隐藏事件
+
   // 为原生对象注入自定义行为
   const action = new ActionMonitor(combination);
   action.injectConsole();   // 监控打印
   action.injectRouter();    // 监听路由
   action.injectEvent();     // 监听事件
   action.injectAjax();      // 监听Ajax
-  /**
-   * 在 load 事件中，上报性能参数
-   * 该事件不可取消，也不会冒泡
-   */
-  //   window.addEventListener('load', (): void => {
-  //     // 加定时器是避免在上报性能参数时，loadEventEnd 为 0，因为事件还没执行完毕
-  //     // setTimeout((): void => {
-  //     //   sendBeacon();
-  //     // }, 0);
-  //   });
+  
   return combination;
 }
 
