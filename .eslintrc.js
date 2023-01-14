@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 11:18:19
- * @LastEditTime: 2023-01-13 17:47:21
+ * @LastEditTime: 2023-01-14 18:10:07
  * @Description: 
  * @FilePath: /web/shin-monitor/.eslintrc.js
  */
@@ -47,5 +47,6 @@ module.exports = {
         '@typescript-eslint/no-var-requires': 'off',    // 允许require()
         '@typescript-eslint/no-explicit-any': 'off',    // 允许any类型
         '@typescript-eslint/no-empty-interface': 'off',    // 允许interface没有属性
+        'no-useless-escape': 'off', // 允许转义符
     }
 };

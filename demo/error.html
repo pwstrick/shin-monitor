@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-13 11:22:45
- * @LastEditTime: 2023-01-13 18:28:45
+ * @LastEditTime: 2023-01-14 18:39:17
  * @Description: 代码异常
  * @FilePath: /web/shin-monitor/demo/error.html
 -->
@@ -11,10 +11,6 @@
 <head>
     <meta charset="UTF-8">
     <title>代码异常</title>
-</head>
-<body>
-    <!--不存在的资源异常-->
-    <img src="https://www.pwstrick.com" />
     <script src="../dist/shin.aio.js"></script>
     <script>
       shin.setParams({
@@ -40,6 +36,12 @@
         error.status = 500;
         throw error;
       });
+    </script>
+</head>
+<body>
+    <!--不存在的资源异常-->
+    <img src="https://www.pwstrick.com" />
+    <script>
       // runtime异常
       a
     </script>

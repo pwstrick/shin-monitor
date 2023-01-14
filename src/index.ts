@@ -2,11 +2,10 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 10:17:17
- * @LastEditTime: 2023-01-14 17:06:45
+ * @LastEditTime: 2023-01-14 18:42:50
  * @Description: 入口，自动初始化
  * @FilePath: /web/shin-monitor/src/index.ts
  */
-
 import ErrorMonitor from './lib/error';
 import ActionMonitor from './lib/action';
 import { TypeShinParams } from './typings';

@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-13 16:32:08
- * @LastEditTime: 2023-01-13 18:28:54
+ * @LastEditTime: 2023-01-14 18:39:51
  * @Description: 监控路由
  * @FilePath: /web/shin-monitor/demo/router.html
 -->
@@ -11,9 +11,6 @@
 <head>
     <meta charset="UTF-8">
     <title>监控路由</title>
-</head>
-<body>
-    <a href="#action">hash</a>
     <script src="../dist/shin.aio.js"></script>
     <script>
         shin.setParams({
@@ -26,5 +23,8 @@
           window.history.pushState({}, '监控打印', 'console.html');
         }, 2000);
     </script>
+</head>
+<body>
+    <a href="#action">hash</a>
 </body>
 </html>

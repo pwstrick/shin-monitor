@@ -7,3 +7,4 @@ dist
 .nyc_output
 typings
 *custom.ts
+*custom.html
