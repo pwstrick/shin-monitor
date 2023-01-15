@@ -2,9 +2,9 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 10:17:17
- * @LastEditTime: 2023-01-13 23:19:36
+ * @LastEditTime: 2023-01-15 14:30:42
  * @Description: rollup.config.js
- * @FilePath: /web/shin-monitor/config/rollup.config.aio.js
+ * @FilePath: /web/shin-monitor/config/rollup.config.umd.js
  */
 // umd
 var nodeResolve = require('rollup-plugin-node-resolve');
@@ -17,7 +17,7 @@ var prod = process.env.NODE_ENV === 'production';
 module.exports = {
   input: 'src/index.ts',
   output: {
-    file: prod ? 'dist/shin.min.js' : 'dist/shin.aio.js',
+    file: prod ? 'dist/shin.min.js' : 'dist/shin.umd.js',
     format: 'umd',
     // When export and export default are not used at the same time, set legacy to true.
     // legacy: true,

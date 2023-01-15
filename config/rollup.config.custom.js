@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-13 23:18:14
- * @LastEditTime: 2023-01-13 23:22:00
+ * @LastEditTime: 2023-01-15 14:29:30
  * @Description: rollup.config.custom.js
  * @FilePath: /web/shin-monitor/config/rollup.config.custom.js
  */
@@ -18,7 +18,7 @@ module.exports = {
   // 当公司需要配置些内部信息，并且不方便公开时，可以采用此脚本，index-custom 不会被版本提交
   input: 'src/index-custom.ts',
   output: {
-    file: prod ? 'dist/shin.min.js' : 'dist/shin.aio.js',
+    file: prod ? 'dist/shin.min.js' : 'dist/shin.umd.js',
     format: 'umd',
     // When export and export default are not used at the same time, set legacy to true.
     // legacy: true,
