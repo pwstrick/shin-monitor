@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 18:18:45
- * @LastEditTime: 2023-01-14 20:56:35
+ * @LastEditTime: 2023-01-15 14:24:30
  * @Description: 性能监控
  * @FilePath: /web/shin-monitor/src/lib/performance.ts
  */
@@ -295,8 +295,8 @@ class PerformanceMonitor {
     api.now = getNowTimestamp();
 
     // 全部取整
-    for (const key in api) {
-      api[key] = rounded(api[key]);
+    for (const keyName in api) {
+      api[keyName] = rounded(api[keyName]);
     }
     
     // 读取FMP信息
