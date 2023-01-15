@@ -15,20 +15,6 @@
 - 监控的行为包括路由、打印、点击事件、异步通信等
 - 性能参数包括首屏、白屏、LCP、FMP、资源信息等
 
-本项目只给出了前端监控的 SDK，监控系统的管理界面可参考 [shin-admin](https://github.com/pwstrick/shin-admin)，后台服务可参考 [shin-server](https://github.com/pwstrick/shin-server)。
-
-下面列出的是几张我自己制作的监控系统的界面示例图。
-
-<img src="https://github.com/pwstrick/shin-monitor/raw/main/demo/img/1.png" />
-
-<img src="https://github.com/pwstrick/shin-monitor/raw/main/demo/img/2.png" />
-
-<img src="https://github.com/pwstrick/shin-monitor/raw/main/demo/img/3.png" />
-
-<img src="https://github.com/pwstrick/shin-monitor/raw/main/demo/img/4.png" />
-
-<img src="https://github.com/pwstrick/shin-monitor/raw/main/demo/img/5.png" />
-
 ## :open_file_folder: 目录介绍
 
 ```
@@ -112,11 +98,6 @@ shin.setParams({
 
 其中上述三个参数是必传的，src 和 psrc 分别是后台监控数据采集和性能参数采集的接口地址，token 用于项目标识。
 
-
-
-## :bookmark_tabs: 文档
-[API](./doc/api.md)
-
 ## :kissing_heart: 源码修改
 在将代码下载下来后，首次运行需要先安装依赖。
 ```bash
@@ -137,8 +118,21 @@ $ npm run build-custom
 
 注意，此文件已被版本忽略。
 
-## :gear: 更新日志
-[CHANGELOG.md](./CHANGELOG.md)
+* [更新日志](./CHANGELOG.md)
+* [计划列表](./TODO.md)
 
-## :airplane: 计划列表
-[TODO.md](./TODO.md)
+## :wrench: 可视化监控系统
+
+本项目只给出了前端监控的 SDK，监控系统的管理界面可参考 [shin-admin](https://github.com/pwstrick/shin-admin)，后台服务可参考 [shin-server](https://github.com/pwstrick/shin-server)。
+
+下面列出的是几张我自己制作的监控系统的界面示例图。
+
+<img src="https://github.com/pwstrick/shin-monitor/raw/main/demo/img/1.png" />
+
+<img src="https://github.com/pwstrick/shin-monitor/raw/main/demo/img/2.png" />
+
+<img src="https://github.com/pwstrick/shin-monitor/raw/main/demo/img/3.png" />
+
+<img src="https://github.com/pwstrick/shin-monitor/raw/main/demo/img/4.png" />
+
+<img src="https://github.com/pwstrick/shin-monitor/raw/main/demo/img/5.png" />
