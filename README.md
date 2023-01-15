@@ -19,13 +19,15 @@
 
 下面列出的是几张我自己制作的监控系统的界面示例图。
 
-<img src="https://github.com/pwstrick/shin-monitor/raw/master/demo/img/1.png" />
+<img src="https://github.com/pwstrick/shin-monitor/raw/main/demo/img/1.png" />
 
-<img src="https://github.com/pwstrick/shin-monitor/raw/master/demo/img/2.png" />
+<img src="https://github.com/pwstrick/shin-monitor/raw/main/demo/img/2.png" />
 
-<img src="https://github.com/pwstrick/shin-monitor/raw/master/demo/img/3.png" />
+<img src="https://github.com/pwstrick/shin-monitor/raw/main/demo/img/3.png" />
 
-<img src="https://github.com/pwstrick/shin-monitor/raw/master/demo/img/4.png" />
+<img src="https://github.com/pwstrick/shin-monitor/raw/main/demo/img/4.png" />
+
+<img src="https://github.com/pwstrick/shin-monitor/raw/main/demo/img/5.png" />
 
 ## :open_file_folder: 目录介绍
 
