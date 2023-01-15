@@ -28,7 +28,7 @@
 └── TODO.md         计划功能
 ```
 
-#### 1）dist
+### 1）dist
 
 dist 是运行编译命令后的输出代码，不会提交到版本中。
 ```bash
@@ -39,7 +39,7 @@ $ npm run build
 
 rollup 的配置文件存在于 config 目录中。
 
-#### 2）config
+### 2）config
 
 在 config 目录中，有多个配置文件，支持 CommonJS、ESM 和 UMD 模块规范。
 ```js
@@ -65,7 +65,7 @@ import shin from 'shin-monitor';
 </head>
 </html>
 ```
-#### 3）demo
+### 3）demo
 
 在 demo 目录中，保存着多个使用示例，但是若要访问，推荐安装 [http-server](https://github.com/http-party/http-server)。
 
@@ -76,7 +76,7 @@ $ http-server ./shin-monitor/
 
 像监控通信，是必须要有服务器的，否则将无法访问。
 
-#### 4）test
+### 4）test
 
 在 test 目录中，保存着单元测试代码，运行命令后，就能开启。
 ```bash
@@ -98,7 +98,7 @@ shin.setParams({
 
 其中上述三个参数是必传的，src 和 psrc 分别是后台监控数据采集和性能参数采集的接口地址，token 用于项目标识。
 
-## :kissing_heart: 源码修改
+## :open_book: 源码修改
 在将代码下载下来后，首次运行需要先安装依赖。
 ```bash
 $ npm install
