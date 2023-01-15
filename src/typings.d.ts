@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 18:03:08
- * @LastEditTime: 2023-01-14 20:36:36
+ * @LastEditTime: 2023-01-15 13:03:56
  * @Description: 自定义的声明文件
  * @FilePath: /web/shin-monitor/src/typings.d.ts
  */
@@ -55,21 +55,21 @@ export interface TypeAjax {
 }
 // 监控系统所有的参数
 export interface TypeShinParams {
-  refer: string;
-  record: TypeRecord;
-  crash: TypeCrashPrams;
-  console: TypeConsole;
-  event: TypeEvent;
+  refer?: string;
+  record?: TypeRecord;
+  crash?: TypeCrashPrams;
+  console?: TypeConsole;
+  event?: TypeEvent;
   src: string;
   psrc: string;
-  pkey: string;
-  subdir: string;
-  rate: number;
-  version: string;
-  identity: TypeIdentity;
-  error: TypeError;
+  pkey?: string;
+  subdir?: string;
+  rate?: number;
+  version?: string;
+  identity?: TypeIdentity;
+  error?: TypeError;
   token?: string;
-  ajax: TypeAjax;
+  ajax?: TypeAjax;
 }
 // 发送到后台格式化后的参数属性
 export interface TypeSendBody {
