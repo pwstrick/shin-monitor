@@ -9,33 +9,37 @@
 
 ## :star: 特性
 
-- 支持ES6+或TypeScript编写源码，编译生成生产代码
-- 多环境支持（支持浏览器原生，支持AMD，CMD，支持Webpack，Rollup，fis等，支持Node）
-- 集成[jsmini](https://github.com/jsmini)
+- 通过 JavaScript 采集监控数据和性能参数，并统一发送到后台
+- 监控的异常包括运行时错误、Promise 错误、框架错误和资源错误
+- 对于白屏错误，借助 [rrweb](https://github.com/rrweb-io/rrweb) 库增加了录像回放功能，恢复案发现场
+- 监控的行为包括路由、打印、点击事件、异步通信等
+- 性能参数包括首屏、白屏、LCP、FMP、资源信息等
 
-> 注意: 如果不同时使用 `export` 与 `export default` 可打开 `legacy模式`，`legacy模式` 下的模块系统可以兼容 `ie6-8`，见rollup配置文件
+本项目只给出了前端监控的 SDK，监控系统的管理界面可参考 [shin-admin](https://github.com/pwstrick/shin-admin)，后台服务可参考 [shin-server](https://github.com/pwstrick/shin-server)。
 
-## :pill: 兼容性
-单元测试保证支持如下环境：
+下面列出的是几张我自己制作的监控系统的界面示例图。
 
-| IE   | CH   | FF   | SF   | OP   | IOS  | Android   | Node  |
-| ---- | ---- | ---- | ---- | ---- | ---- | ---- | ----- |
-| 6+   | 29+ | 55+  | 9+   | 50+  | 9+   | 4+   | 4+ |
+<img src="https://github.com/pwstrick/shin-monitor/raw/master/demo/img/1.png" />
 
-**注意：编译代码依赖ES5环境，对于ie6-8需要引入[es5-shim](http://github.com/es-shims/es5-shim/)才可以兼容，可以查看[demo/demo-global.html](./demo/demo-global.html)中的例子**
+<img src="https://github.com/pwstrick/shin-monitor/raw/master/demo/img/2.png" />
+
+<img src="https://github.com/pwstrick/shin-monitor/raw/master/demo/img/3.png" />
+
+<img src="https://github.com/pwstrick/shin-monitor/raw/master/demo/img/4.png" />
 
 ## :open_file_folder: 目录介绍
 
 ```
-.
-├── demo 使用demo
-├── dist 编译产出代码
-├── doc 项目文档
-├── src 源代码目录
-├── test 单元测试
-├── CHANGELOG.md 变更日志
-└── TODO.md 计划功能
+├── demo    使用demo
+├── dist    编译产出代码
+├── doc     项目文档
+├── src     源代码目录
+├── test    单元测试
+├── CHANGELOG.md    变更日志
+└── TODO.md         计划功能
 ```
+
+
 
 ## :rocket: 使用者指南
 
@@ -106,10 +110,6 @@ $ npm run release
 ```bash
 $ npm publish
 ```
-
-## 贡献者列表
-
-[contributors](https://github.com/pwstrick/shin-monitor/graphs/contributors)
 
 ## :gear: 更新日志
 [CHANGELOG.md](./CHANGELOG.md)
