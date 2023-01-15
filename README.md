@@ -69,10 +69,12 @@ import shin from 'shin-monitor';
 
 在 demo 目录中，保存着多个使用示例，但是若要访问，推荐安装 [http-server](https://github.com/http-party/http-server)。
 
-运行命令后，就能在本地搭建服务器，输入 http://localhost:8080/demo/xxx.html 就能访问示例了。
+运行命令后，就能在本地搭建服务器。
 ```bash
 $ http-server ./shin-monitor/
 ```
+
+在浏览器地址栏中，输入 http://localhost:8080/demo/xxx.html 就能访问指定的示例了。
 
 像监控通信，是必须要有服务器的，否则将无法访问。
 
@@ -97,6 +99,8 @@ shin.setParams({
 ```
 
 上述三个参数是必传的，src 和 psrc 分别是监控数据采集和性能参数采集的接口地址，token 用于标识监控的项目。
+
+详细的参数说明，可以参考[此处](./doc/api.md)
 
 ## :open_book: 源码修改
 在将代码下载下来后，首次运行需要先安装依赖。
