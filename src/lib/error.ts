@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 14:21:36
- * @LastEditTime: 2023-01-14 19:08:26
+ * @LastEditTime: 2023-01-16 17:54:45
  * @Description: 监控各类错误
  * @FilePath: /web/shin-monitor/src/lib/error.ts
  */
@@ -114,7 +114,10 @@ class ErrorMonitor {
         checkoutEveryNms: 10 * 1000, // 每 10 秒重新制作快照
       });
     };
-    document.head.append(script);
+    setTimeout((): void => {
+      document.head && document.head.append(script);
+    }, 0);
+    
   }
   /**
    * 读取最近 20 秒的行为记录
