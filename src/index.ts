@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 10:17:17
- * @LastEditTime: 2023-01-14 20:59:22
+ * @LastEditTime: 2023-01-16 10:52:56
  * @Description: 入口，自动初始化
  * @FilePath: /web/shin-monitor/src/index.ts
  */
@@ -15,9 +15,8 @@ import { TypeShinParams } from './typings';
  * 默认属性
  */
 const defaults: TypeShinParams = {
-  refer: location.href,     // 上一页地址
   record: {
-    isOpen: true,           // 是否打开录像
+    isOpen: true,           // 是否开启录像
     src: '//cdn.jsdelivr.net/npm/rrweb@latest/dist/rrweb.min.js'   // 录像地址
   },
   error: {
@@ -25,12 +24,12 @@ const defaults: TypeShinParams = {
     isFilterPromiseFunc: null,      // 需要过滤的Promise错误
   },
   console: {
-    isOpen: false,              // 默认是关闭，在调试时，将不会重写 console.log
+    isOpen: true,              // 默认是开启，在本地调试时，可以将其关闭
     isFilterLogFunc: null,      // 过滤要打印的内容
   },
   crash: {
     isOpen: true,           // 是否监控页面奔溃，默认开启
-    validateFunc: null,     // 自定义奔溃规则函数，例如页面白屏判断的条件，返回值包括 {success: true, prompt:'提示'}
+    validateFunc: null,     // 自定义页面白屏的判断条件，返回值包括 {success: true, prompt:'提示'}
   },
   event: {
     isFilterClickFunc: null,    // 在点击事件中需要过滤的元素
@@ -38,8 +37,8 @@ const defaults: TypeShinParams = {
   ajax: {
     isFilterSendFunc: null      // 在发送监控日志时需要过滤的通信
   },
-  src: '//127.0.0.1:3000/ma.gif',       // 请求发送数据的监控地址
-  psrc: '//127.0.0.1:3000/pe.gif',      // 请求发送数据的性能地址
+  src: '//127.0.0.1:3000/ma.gif',       // 采集监控数据的后台接收地址
+  psrc: '//127.0.0.1:3000/pe.gif',      // 采集性能参数的后台接收地址
   pkey: '',         // 性能监控的项目key
   subdir: '',       // 一个项目下的子目录
   rate: 5,          // 随机采样率，用于性能搜集，范围是 1~10，10 表示百分百发送

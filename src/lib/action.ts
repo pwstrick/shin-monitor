@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 14:24:20
- * @LastEditTime: 2023-01-14 20:08:16
+ * @LastEditTime: 2023-01-16 10:53:29
  * @Description: 用户行为监控
  * @FilePath: /web/shin-monitor/src/lib/action.ts
  */
@@ -16,9 +16,11 @@ type TypeDetect = (e: Event) => boolean;
 class ActionMonitor {
   private params: TypeShinParams;  // 内部私有变量
   private http: Http;
+  private refer: string; // 上一页地址
   public constructor(params: TypeShinParams) {
     this.params = params;
     this.http = new Http(params);
+    this.refer = location.href;
   }
   /**
    * 递归的将数字四舍五入小数点后两位
@@ -80,10 +82,10 @@ class ActionMonitor {
   private sendRouterInfo(): void {
     const href = location.href;
     this.handleAction(CONSTANT.ACTION_REDIRECT, {
-      refer: this.params.refer,
+      refer: this.refer,
       current: href,
     });
-    this.params.refer = href;
+    this.refer = href;
   }
   /**
    * 监听路由跳转

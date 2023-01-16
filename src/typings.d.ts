@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 18:03:08
- * @LastEditTime: 2023-01-15 13:03:56
+ * @LastEditTime: 2023-01-16 10:53:35
  * @Description: 自定义的声明文件
  * @FilePath: /web/shin-monitor/src/typings.d.ts
  */
@@ -55,7 +55,6 @@ export interface TypeAjax {
 }
 // 监控系统所有的参数
 export interface TypeShinParams {
-  refer?: string;
   record?: TypeRecord;
   crash?: TypeCrashPrams;
   console?: TypeConsole;

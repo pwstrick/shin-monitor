@@ -14,6 +14,7 @@
 - 对于白屏错误，借助 [rrweb](https://github.com/rrweb-io/rrweb) 库增加了录像回放功能，恢复案发现场
 - 监控的行为包括路由、打印、点击事件、异步通信等
 - 性能参数包括首屏、白屏、LCP、FMP、资源信息等
+- 在我的[专栏](https://www.kancloud.cn/pwstrick/fe-questions/2363166)中，分析了监控系统的代码细节，并记录了研发迭代过程。
 
 ## :open_file_folder: 目录介绍
 
@@ -94,13 +95,43 @@ $ npm run test
 shin.setParams({
   token: "pwstrick",
   src: "//pwstrick.com/ma.gif",
-  psrc: "//pwstrick.com/pe.gif"
+  psrc: "//pwstrick.com/pe.gif",
+  pkey: "7c891ae43d330f73"
 });
 ```
 
-上述三个参数是必传的，src 和 psrc 分别是监控数据采集和性能参数采集的接口地址，token 用于标识监控的项目。
+上述 4 个参数是必传的，具体的作用，可以参考下文说明。
 
-详细的参数说明，可以参考[此处](./doc/api.md)。
+### 1）参数详解
+
+为了能更灵活的配置监控，提供了多个参数。
+
+* src：必填项，采集监控数据的后台接收地址，默认是 //127.0.0.1:3000/ma.gif
+* psrc：必填项，采集性能参数的后台接收地址，//127.0.0.1:3000/pe.gif
+* token：必填项，项目标识符，可自定义，用于区分监控的不同项目
+* pkey：必填项，性能监控的项目 key，一个项目下面可能有多个不同的子项目，这样就能单独监控子项目的性能
+* subdir：一个项目下的子目录，用于拼接 source map 的脚本地址 
+* rate：随机采样率，用于性能搜集，默认值是 5，范围在 1~10 之间，10 表示百分百发送
+* version：版本，便于追查出错源
+* record：录像配置
+    * isOpen：是否开启录像，默认是 true
+    * src：rrweb 地址，默认是官方提供的 CDN 地址 //cdn.jsdelivr.net/npm/rrweb@latest/dist/rrweb.min.js
+* error：错误配置
+    * isFilterErrorFunc：需要过滤的脚本错误，默认是 null，可设置一个函数，(event: ErrorEvent) => boolean，参考 demo/error.html
+    * isFilterPromiseFunc：需要过滤的 Promise 错误，默认是 null，可设置一个函数，(desc: TypeAjaxDesc) => boolean，参考 demo/error.html
+* console: console 配置
+    * isOpen: 是否开启，默认是 true，在本地调试时，可以将其关闭
+    * isFilterLogFunc: 过滤要打印的内容，默认是 null，可设置一个函数，(desc: string) => boolean，参数 demo/console.html，参考 demo/console.html
+* crash：页面白屏配置
+    * isOpen: 是否监控页面奔溃，默认是 true
+    * validateFunc: 自定义页面白屏的判断条件，默认是 null，可设置一个函数，() => ({success: true, prompt:'提示'})，参考 demo/crash.html
+* event: 事件配置
+    * isFilterClickFunc: 在点击事件中需要过滤的元素，默认是 null，可设置一个函数，(element: HTMLElement) => boolean，参考 demo/event.html
+* ajax：异步 Ajax 配置
+    * isFilterSendFunc: 在发送监控日志时需要过滤的通信，默认是 null，可设置一个函数， (req: TypeAjaxRequest) => boolean，参考 demo/ajax.html
+* identity：身份信息配置
+    * value: 自定义的身份信息字段
+    * getFunc: 自定义的身份信息获取函数，默认是 null，可设置一个函数，(params: TypeShinParams) => void，参考 demo/identity.html
 
 ## :open_book: 源码修改
 在将代码下载下来后，首次运行需要先安装依赖。
