@@ -15,7 +15,6 @@
 ├── dist            编译代码
 ├── config          配置目录
 ├── demo            示例目录
-├── doc             项目文档
 ├── src             源码目录
 ├── test            单元测试
 ├── CHANGELOG.md    变更日志
