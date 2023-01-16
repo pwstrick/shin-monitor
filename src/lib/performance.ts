@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 18:18:45
- * @LastEditTime: 2023-01-15 14:24:30
+ * @LastEditTime: 2023-01-16 15:47:45
  * @Description: 性能监控
  * @FilePath: /web/shin-monitor/src/lib/performance.ts
  */
@@ -65,7 +65,7 @@ class PerformanceMonitor {
     if(!PerformanceObserver) return false;
     const types = (PerformanceObserver as any).supportedEntryTypes;
     // 浏览器兼容判断
-    if(types.indexOf(type) === -1) {
+    if(types && types.indexOf(type) === -1) {
       return false;
     }
     return true;
