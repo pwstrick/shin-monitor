@@ -14,7 +14,7 @@
 - 对于白屏错误，借助 [rrweb](https://github.com/rrweb-io/rrweb) 库增加了录像回放功能，恢复案发现场
 - 监控的行为包括路由、打印、点击事件、异步通信等
 - 性能参数包括首屏、白屏、LCP、FMP、资源信息等
-- 在我的[专栏](https://www.kancloud.cn/pwstrick/fe-questions/2363166)中，分析了监控系统的代码细节，并记录了研发迭代过程。
+- 在我的[专栏](https://www.kancloud.cn/pwstrick/fe-questions/2363166)中，分析了监控系统的代码细节，并记录了研发迭代过程
 
 ## :open_file_folder: 目录介绍
 
@@ -117,21 +117,84 @@ shin.setParams({
     * isOpen：是否开启录像，默认是 true
     * src：rrweb 地址，默认是官方提供的 CDN 地址 //cdn.jsdelivr.net/npm/rrweb@latest/dist/rrweb.min.js
 * error：错误配置
-    * isFilterErrorFunc：需要过滤的脚本错误，默认是 null，可设置一个函数，(event: ErrorEvent) => boolean，参考 demo/error.html
-    * isFilterPromiseFunc：需要过滤的 Promise 错误，默认是 null，可设置一个函数，(desc: TypeAjaxDesc) => boolean，参考 demo/error.html
+    * isFilterErrorFunc：需要过滤的脚本错误，默认是 null，可设置一个函数，参考 demo/error.html
+    * isFilterPromiseFunc：需要过滤的 Promise 错误，默认是 null，可设置一个函数，参考 demo/error.html
+```js
+shin.setParams({
+  error: {
+    /**
+     * 过滤掉与业务无关或无意义的错误
+     */
+    isFilterErrorFunc: (event) =>   // (event: ErrorEvent) => boolean
+        event.message === "Script error.", 
+    isFilterPromiseFunc: (desc) =>  // (desc: TypeAjaxDesc) => boolean
+        desc.status == 401 || desc.url.indexOf("reports/ai/logs") >= 0
+  }
+});
+```
 * console: console 配置
     * isOpen: 是否开启，默认是 true，在本地调试时，可以将其关闭
-    * isFilterLogFunc: 过滤要打印的内容，默认是 null，可设置一个函数，(desc: string) => boolean，参数 demo/console.html，参考 demo/console.html
+    * isFilterLogFunc: 过滤要打印的内容，默认是 null，可设置一个函数，参考 demo/console.html
+```js
+shin.setParams({
+  console: {
+    isFilterFunc: (desc) =>     // (desc: string) => boolean
+        desc && desc.indexOf("Agora-SDK") >= 0
+  }
+});
+```
 * crash：页面白屏配置
     * isOpen: 是否监控页面奔溃，默认是 true
-    * validateFunc: 自定义页面白屏的判断条件，默认是 null，可设置一个函数，() => ({success: true, prompt:'提示'})，参考 demo/crash.html
+    * validateFunc: 自定义页面白屏的判断条件，默认是 null，可设置一个函数，参考 demo/crash.html
+```js
+shin.setParams({
+  validateCrash: () => {    // () => TypeCrashResult
+    /**
+     * 当root标签中的内容为空时，可认为页面已奔溃
+     * 响应值格式：{success: true, prompt:'提示'}
+     */
+    return {
+      success: document.getElementById("root").innerHTML.length > 0,
+      prompt: "页面出现空白"
+    };
+  }
+});
+```
 * event: 事件配置
-    * isFilterClickFunc: 在点击事件中需要过滤的元素，默认是 null，可设置一个函数，(element: HTMLElement) => boolean，参考 demo/event.html
+    * isFilterClickFunc: 在点击事件中需要过滤的元素，默认是 null，可设置一个函数，参考 demo/event.html
+```js
+shin.setParams({
+  event: {
+    isFilterFunc: (node) => {    // (element: HTMLElement) => boolean
+      const nodeName = node.nodeName.toLowerCase();
+      return nodeName !== 'a' && nodeName !== 'button' && nodeName !== 'li';
+    }
+  }
+});
+```
 * ajax：异步 Ajax 配置
-    * isFilterSendFunc: 在发送监控日志时需要过滤的通信，默认是 null，可设置一个函数， (req: TypeAjaxRequest) => boolean，参考 demo/ajax.html
+    * isFilterSendFunc: 在发送监控日志时需要过滤的通信，默认是 null，可设置一个函数，参考 demo/ajax.html
+```js
+shin.setParams({
+  ajax: {
+    isFilterSendFunc: (req) => {    // (req: TypeAjaxRequest) => boolean
+      return req.status >= 500 || req.ajax.url === '/user';
+    }
+  }
+});
+```
 * identity：身份信息配置
     * value: 自定义的身份信息字段
-    * getFunc: 自定义的身份信息获取函数，默认是 null，可设置一个函数，(params: TypeShinParams) => void，参考 demo/identity.html
+    * getFunc: 自定义的身份信息获取函数，默认是 null，可设置一个函数，参考 demo/identity.html
+```js
+shin.setParams({
+  ajax: {
+    getFunc: (params) => {    // (params: TypeShinParams) => void
+      params.identity.value = 'test';
+    }
+  }
+});
+```
 
 ## :open_book: 源码修改
 在将代码下载下来后，首次运行需要先安装依赖。
