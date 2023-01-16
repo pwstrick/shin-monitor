@@ -216,7 +216,7 @@ $ npm run build-custom
 
 注意，此文件已被版本忽略。
 
-* [更新日志](./CHANGELOG.md)
+* [变更日志](./CHANGELOG.md)
 * [计划列表](./TODO.md)
 
 ## :wrench: 可视化监控系统
