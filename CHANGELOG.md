@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 10:17:17
- * @LastEditTime: 2023-01-16 18:00:02
+ * @LastEditTime: 2023-01-16 18:43:22
  * @Description: 变更日志
  * @FilePath: /web/shin-monitor/CHANGELOG.md
 -->
@@ -18,3 +18,6 @@
 
 ## 1.0.3（2023-01-16）
 * 修复 document.head.append is not a function
+
+## 1.0.4（2023-01-16）
+* 修复 PerformanceObserver is not defined
