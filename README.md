@@ -1,4 +1,4 @@
-# [shin-monitor](https://github.com/pwstrick/shin-monitor) [![license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/pwstrick/shin-monitor/blob/master/LICENSE) [![npm](https://img.shields.io/badge/npm-1.0.0-orange.svg)](https://www.npmjs.com/package/shin-monitor)
+# [shin-monitor](https://github.com/pwstrick/shin-monitor) [![license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/pwstrick/shin-monitor/blob/master/LICENSE) [![npm](https://img.shields.io/badge/npm-1.0.2-orange.svg)](https://www.npmjs.com/package/shin-monitor)
 
 ## :star: 特性
 
