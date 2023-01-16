@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 14:21:36
- * @LastEditTime: 2023-01-16 17:54:45
+ * @LastEditTime: 2023-01-16 18:39:08
  * @Description: 监控各类错误
  * @FilePath: /web/shin-monitor/src/lib/error.ts
  */
@@ -115,7 +115,7 @@ class ErrorMonitor {
       });
     };
     setTimeout((): void => {
-      document.head && document.head.append(script);
+      document.head && document.head.appendChild(script);
     }, 0);
     
   }
