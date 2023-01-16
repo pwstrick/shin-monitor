@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 18:18:45
- * @LastEditTime: 2023-01-16 16:06:05
+ * @LastEditTime: 2023-01-16 16:25:23
  * @Description: 性能监控
  * @FilePath: /web/shin-monitor/src/lib/performance.ts
  */
@@ -92,7 +92,7 @@ class PerformanceMonitor {
       };
     });
     // buffered 为 true 表示调用 observe() 之前的也算进来
-    po.observe({type: lcpType, buffered: true, entryType: [lcpType]} as any);
+    po.observe({type: lcpType, buffered: true, entryTypes: [lcpType]} as any);
     /**
      * 当有按键或点击（包括滚动）时，就停止 LCP 的采样
      * once 参数是指事件被调用一次后就会被移除
@@ -132,7 +132,7 @@ class PerformanceMonitor {
       // 断开此观察者的连接，因为回调仅触发一次
       obs.disconnect();
     });
-    po.observe({type: fidType, buffered: true, entryType: [fidType]} as any);
+    po.observe({type: fidType, buffered: true, entryTypes: [fidType]} as any);
   }
   /**
    * 请求时间统计
