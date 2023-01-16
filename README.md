@@ -189,6 +189,49 @@ shin.setParams({
 });
 ```
 
+### 2）特殊属性
+
+在调用 setParams() 方法后，自动会在 shin 对象中增加 reactError() 和 vueError()。
+
+可在 React 项目中创建一个 ErrorBoundary 类，手动调用 reactError() 方法，下面是 reactError() 的源码。
+```js
+public reactError(err: any, info: any): void {
+  this.handleError({
+    type: CONSTANT.ERROR_REACT,
+    desc: {
+      prompt: err.toString(),
+      url: location.href
+    },
+    stack: info.componentStack,
+  });
+}
+```
+
+如果要对 Vue 进行错误捕获，那么就得重写 Vue.config.errorHandler()，其参数就是 Vue 对象，下面是 vueError() 的源码。
+```js
+public vueError (vue: any): void {
+  const _vueConfigErrorHandler = vue.config.errorHandler;
+  vue.config.errorHandler =  (err: any, vm: any, info: any): void => {
+    this.handleError({
+      type: CONSTANT.ERROR_VUE,
+      desc: {
+        prompt: err.toString(), // 描述
+        url: location.href
+      },
+      stack: err.stack,         // 堆栈
+    });
+    // 控制台打印错误
+    if (typeof console !== 'undefined' && typeof console.error !== 'undefined') {
+      console.error(err);
+    }
+    // 执行原始的错误处理程序
+    if (typeof _vueConfigErrorHandler === 'function') {
+      _vueConfigErrorHandler.call(err, vm, info);
+    }
+  };
+}
+```
+
 ## :open_book: 源码修改
 在将代码下载下来后，首次运行需要先安装依赖。
 ```bash
