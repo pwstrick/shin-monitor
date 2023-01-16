@@ -1,11 +1,14 @@
+<!--
+ * @Author: strick
+ * @LastEditors: strick
+ * @Date: 2023-01-12 10:17:17
+ * @LastEditTime: 2023-01-16 11:19:23
+ * @Description: 变更日志
+ * @FilePath: /web/shin-monitor/CHANGELOG.md
+-->
 # 变更日志
 
-## 0.2.0 / 2019-3-1
+## 1.0.0 / 2023-01-16
 
-- 新增功能C
-- 新增功能D
+- 发布第一版
 
-## 0.1.0 / 2018-3-1
-
-- 新增功能A
-- 新增功能B
