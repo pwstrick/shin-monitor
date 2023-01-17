@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 18:18:45
- * @LastEditTime: 2023-01-17 13:22:59
+ * @LastEditTime: 2023-01-17 17:39:39
  * @Description: 性能监控
  * @FilePath: /web/shin-monitor/src/lib/performance.ts
  */
@@ -35,6 +35,16 @@ class PerformanceMonitor {
     this.fid = 0;
   }
   /**
+   * 从 performance.timing 读取的性能参数，有些值是 0
+   * @param timing 
+   */
+  private setTimingDefaultValue(timing: any): void {
+    if(timing.redirectStart === 0) timing.redirectStart = timing.navigationStart;
+    if(timing.redirectEnd === 0) timing.redirectEnd = timing.navigationStart;
+    if(timing.loadEventStart === 0) timing.loadEventStart = timing.domComplete;
+    if(timing.loadEventEnd === 0) timing.loadEventEnd = timing.loadEventStart;
+  }
+  /**
    * 读取 timing 对象，兼容新版和旧版
    */
   private getTiming(): TypeTiming {
@@ -46,15 +56,22 @@ class PerformanceMonitor {
     let navigationStart: number;
     if (timing.startTime === undefined) {
       navigationStart = timing.navigationStart;
+      const cloneTiming: TypePerformanceTiming = {} as any;
+      // 不能直接将 timing 传递进去，因为 timing 的属性都是只读的
+      for(const key in timing) {
+        cloneTiming[key] = timing[key];
+      }
+      // 消除为 0 的性能参数
+      this.setTimingDefaultValue(cloneTiming);
       /**
        * 之所以老版本的用 Date，是为了防止出现负数
        * 当 performance.now 是最新版本时，数值的位数要比 timing 中的少很多
        */
       now = new Date().getTime() - navigationStart;
-    } else {
-      navigationStart = timing.startTime;
-      now = getNowTimestamp() - navigationStart;
-    }
+      return { timing: cloneTiming, navigationStart, now: rounded(now)};
+    } 
+    navigationStart = timing.startTime;
+    now = getNowTimestamp() - navigationStart;
     return { timing, navigationStart, now: rounded(now) };
   }
   /**
@@ -304,8 +321,10 @@ class PerformanceMonitor {
     
     // 读取FMP信息
     const fmp = this.fmpObj.getFMP();
+    const fmpTime = rounded(fmp.ts - navigationStart);
     this.fmp = {
-      time: rounded(fmp.ts - navigationStart),
+      // ts 是通过 performance.now() 得到的，若 navigationStart 是从 performance.timing 获取的（13 位的数字），那么就会出现负数
+      time: fmpTime > 0 ? fmpTime : rounded(fmp.ts), 
       element: fmp.element ? removeQuote((fmp.element as Element).outerHTML) : ''
     };
 
