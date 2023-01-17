@@ -243,7 +243,8 @@ public vueError (vue: any): void {
 * unloadEventTime：Unload 事件耗时
 * loadEventTime：执行 onload 回调函数的时间
 * interactiveTime：首次可交互时间
-* domReadyTime：用户可操作时间（DOM Ready时间），在初始 HTML 文档已完全加载和解析时触发，无需等待图像和 iframe 完成加载
+* domReadyTime：用户可操作时间（DOM Ready时间）
+  在初始 HTML 文档已完全加载和解析时触发，无需等待图像和 iframe 完成加载
 * firstPaint：首次渲染的时间，即白屏时间（FP）
 * firstPaintStart：记录 FP 时间点
 * firstContentfulPaint：首次有实际内容渲染的时间（FCP）
