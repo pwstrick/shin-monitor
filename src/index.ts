@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 10:17:17
- * @LastEditTime: 2023-01-17 10:56:21
+ * @LastEditTime: 2023-01-17 11:00:40
  * @Description: 入口，自动初始化
  * @FilePath: /web/shin-monitor/src/index.ts
  */
@@ -74,7 +74,7 @@ function setParams(params: TypeShinParams): TypeShinParams {
   const { getFunc } = combination.identity;
   getFunc && getFunc(combination);
   
-  // 记录用户行为
+  // 监控页面错误
   const error = new ErrorMonitor(combination);
   error.registerErrorEvent();                   // 注册 error 事件
   error.registerUnhandledrejectionEvent();      // 注册 unhandledrejection 事件
