@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 10:17:17
- * @LastEditTime: 2023-01-17 13:50:16
+ * @LastEditTime: 2023-01-17 14:52:24
  * @Description: 变更日志
  * @FilePath: /web/shin-monitor/CHANGELOG.md
 -->
@@ -24,3 +24,6 @@
 
 ## 1.0.5（2023-01-17）
 * 补充性能参数的说明
+
+## 1.0.6（2023-01-17）
+* Supplemental English Documentation Instructions
