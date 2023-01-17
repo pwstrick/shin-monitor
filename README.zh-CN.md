@@ -101,7 +101,7 @@ shin.setParams({
 为了能更灵活的配置监控，提供了多个参数。
 
 * src：必填项，采集监控数据的后台接收地址，默认是 //127.0.0.1:3000/ma.gif
-* psrc：必填项，采集性能参数的后台接收地址，//127.0.0.1:3000/pe.gif
+* psrc：必填项，采集性能参数的后台接收地址，默认是 //127.0.0.1:3000/pe.gif
 * token：必填项，项目标识符，可自定义，用于区分监控的不同项目
 * pkey：必填项，性能监控的项目 key，一个项目下面可能有多个不同的子项目，这样就能单独监控子项目的性能
 * subdir：一个项目下的子目录，用于拼接 source map 的脚本地址 
@@ -255,10 +255,10 @@ public vueError (vue: any): void {
 * compression：传输内容压缩百分比
 * redirectTime：重定向的时间
   * 拒绝重定向，例如 https://pwstrick.com 就不该写成 http://pwstrick.com
-* appcacheTime：DNS缓存耗时
-* lookupDomainTime：DNS查询耗时
-* connectSslTime：SSL连接耗时
-* connectTime：TCP连接耗时
+* appcacheTime：DNS 缓存耗时
+* lookupDomainTime：DNS 查询耗时
+* connectSslTime：SSL 连接耗时
+* connectTime：TCP 连接耗时
 * requestTime：内容加载完成的时间
 * requestDocumentTime：请求文档，开始请求文档到开始接收文档之间的耗时
 * responseDocumentTime：接收文档（内容传输），开始接收文档到文档接收完成之间的耗时
