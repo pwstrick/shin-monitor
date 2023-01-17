@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 18:18:45
- * @LastEditTime: 2023-01-16 18:41:15
+ * @LastEditTime: 2023-01-17 13:22:59
  * @Description: 性能监控
  * @FilePath: /web/shin-monitor/src/lib/performance.ts
  */
@@ -200,7 +200,7 @@ class PerformanceMonitor {
      */
     if (paint && timing.entryType && paint[1]) {
       api.firstContentfulPaint = paint[1].startTime - timing.fetchStart;
-      api.firstContentfulPaintStart = paint[1].startTime;   // 记录白屏时间点
+      api.firstContentfulPaintStart = paint[1].startTime;   // 记录 FCP 时间点
     } else {
       api.firstContentfulPaint = 0;
     }
@@ -239,7 +239,7 @@ class PerformanceMonitor {
 
     /**
      * 重定向的时间
-     * 拒绝重定向！比如，http://example.com/ 就不该写成 http://example.com
+     * 拒绝重定向，例如 https://pwstrick.com/ 就不该写成 http://pwstrick.com
      */
     api.redirectTime = timing.redirectEnd - timing.redirectStart;
 
@@ -274,7 +274,7 @@ class PerformanceMonitor {
 
     /**
      * 请求文档
-     * 开始请求文档到开始接收文档
+     * 开始请求文档到开始接收文档之间的耗时
      */
     api.requestDocumentTime = timing.responseStart - timing.requestStart;
 

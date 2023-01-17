@@ -6,12 +6,12 @@
 
 不过，我所处的线上场景可能无法覆盖到所有的情况，因此 shin-monitor 在各方面还有很大的提升空间。
 
-- 通过 JavaScript 采集监控数据和性能参数，并统一发送到后台
+- 通过 JavaScript 采集监控数据和性能参数，并统一发送到后台，参考[源码分析](https://www.kancloud.cn/pwstrick/fe-questions/3116144)
 - 监控的异常包括运行时错误、Promise 错误、框架错误和资源错误
 - 对于白屏错误，借助 [rrweb](https://github.com/rrweb-io/rrweb) 库增加了录像回放功能，恢复案发现场
 - 监控的行为包括路由、打印、点击事件、异步通信等
 - 性能参数包括首屏、白屏、LCP、FMP、资源信息等
-- 在我的[专栏](https://www.kancloud.cn/pwstrick/fe-questions/2363166)中，分析了监控系统的代码细节，并记录了研发迭代过程
+- 在我的[专栏](https://www.kancloud.cn/pwstrick/fe-questions/2363166)中，详细记录了监控脚本的研发迭代过程
 
 ## :open_file_folder: 目录介绍
 
@@ -234,6 +234,49 @@ public vueError (vue: any): void {
   };
 }
 ```
+
+### 3）性能参数
+
+在提交到后台之前，脚本会对搜集到的性能参数进行计算，计算后取整或保留 1 位小数，单位都为毫秒（ms）。
+
+* loadTime：页面加载总时间，有可能为0，未触发load事件
+* unloadEventTime：Unload 事件耗时
+* loadEventTime：执行 onload 回调函数的时间
+* interactiveTime：首次可交互时间
+* domReadyTime：用户可操作时间（DOM Ready时间），在初始 HTML 文档已完全加载和解析时触发，无需等待图像和 iframe 完成加载
+* firstPaint：首次渲染的时间，即白屏时间（FP）
+* firstPaintStart：记录 FP 时间点
+* firstContentfulPaint：首次有实际内容渲染的时间（FCP）
+* firstContentfulPaintStart：记录 FCP 时间点
+* parseDomTime：解析 DOM 树的时间，DOM 中的所有脚本，包括具有 async 属性的脚本，都已执行。并且加载 DOM 中定义的所有页面静态资源（图像、iframe 等）
+* initDomTreeTime：请求完毕至 DOM 加载的耗时，在加载 DOM 并执行网页的阻塞脚本时触发
+* readyStart：准备新页面的耗时
+* redirectCount：重定向次数
+* compression：传输内容压缩百分比
+* redirectTime：重定向的时间，拒绝重定向，例如 https://pwstrick.com/ 就不该写成 http://pwstrick.com
+* appcacheTime：DNS缓存耗时
+* lookupDomainTime：DNS查询耗时
+* connectSslTime：SSL连接耗时
+* connectTime：TCP连接耗时
+* requestTime：内容加载完成的时间
+* requestDocumentTime：请求文档，开始请求文档到开始接收文档之间的耗时
+* responseDocumentTime：接收文档（内容传输），开始接收文档到文档接收完成之间的耗时
+* TTFB：读取页面第一个字节的时间，包含重定向时间
+* firstScreen：首屏时间，取 LCP、FMP 和 domReadyTime 之间的最大值
+* timing：原始性能参数
+  * 通过 [performance.getEntriesByType('navigation')\[0\]](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceNavigationTiming) 或 [performance.timing](https://developer.mozilla.org/en-US/docs/Web/API/Performance/timing) 得到的性能参数
+  * fid：用户第一次与页面交互到浏览器对交互作出响应的时间
+  * fmp：首次有效绘制时间，即首屏最有意义的内容的渲染时间
+    * time：时间
+    * element：字符串形式的最有意义的元素
+  * lcp：最大内容在可视区域内变得可见的时间
+    * time：时间
+    * url：资源地址
+    * element：字符串形式的最大内容的元素
+* resource：静态资源的[性能参数](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceResourceTiming)列表，只存储 1 分钟内的资源
+  * name：资源名称
+  * duration：资源接收的耗时，responseEnd 和 startTime 之间的差值
+  * startTime：开始获取该资源的时间
 
 ## :open_book: 源码修改
 在将代码下载下来后，首次运行需要先安装依赖。
