@@ -255,7 +255,8 @@ public vueError (vue: any): void {
 * readyStart：准备新页面的耗时
 * redirectCount：重定向次数
 * compression：传输内容压缩百分比
-* redirectTime：重定向的时间，拒绝重定向，例如 https://pwstrick.com 就不该写成 http://pwstrick.com
+* redirectTime：重定向的时间
+  * 拒绝重定向，例如 https://pwstrick.com 就不该写成 http://pwstrick.com
 * appcacheTime：DNS缓存耗时
 * lookupDomainTime：DNS查询耗时
 * connectSslTime：SSL连接耗时
