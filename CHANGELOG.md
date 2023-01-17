@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 10:17:17
- * @LastEditTime: 2023-01-17 14:52:24
+ * @LastEditTime: 2023-01-17 17:42:28
  * @Description: 变更日志
  * @FilePath: /web/shin-monitor/CHANGELOG.md
 -->
@@ -27,3 +27,6 @@
 
 ## 1.0.6（2023-01-17）
 * Supplemental English Documentation Instructions
+
+## 1.0.7（2023-01-17）
+* 修复 performance.timing 计算错误的情况
