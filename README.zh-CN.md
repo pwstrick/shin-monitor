@@ -1,7 +1,3 @@
-# [shin-monitor](https://github.com/pwstrick/shin-monitor) [![license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/pwstrick/shin-monitor/blob/master/LICENSE) [![npm](https://img.shields.io/badge/npm-1.0.5-orange.svg)](https://www.npmjs.com/package/shin-monitor)
-
-English | [简体中文](./README.zh-CN.md)
-
 ## :star: 特性
 
 在经过两年多的线上沉淀后，将监控代码重新用 TypeScript 编写，删除冗余逻辑，正式开源。
