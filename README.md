@@ -244,17 +244,18 @@ public vueError (vue: any): void {
 * loadEventTime：执行 onload 回调函数的时间
 * interactiveTime：首次可交互时间
 * domReadyTime：用户可操作时间（DOM Ready时间）
-  在初始 HTML 文档已完全加载和解析时触发，无需等待图像和 iframe 完成加载
+  * 在初始 HTML 文档已完全加载和解析时触发，无需等待图像和 iframe 完成加载
 * firstPaint：首次渲染的时间，即白屏时间（FP）
 * firstPaintStart：记录 FP 时间点
 * firstContentfulPaint：首次有实际内容渲染的时间（FCP）
 * firstContentfulPaintStart：记录 FCP 时间点
-* parseDomTime：解析 DOM 树的时间，DOM 中的所有脚本，包括具有 async 属性的脚本，都已执行。并且加载 DOM 中定义的所有页面静态资源（图像、iframe 等）
+* parseDomTime：解析 DOM 树的时间，DOM 中的所有脚本
+  * 包括具有 async 属性的脚本，都已执行。并且加载 DOM 中定义的所有页面静态资源（图像、iframe 等）
 * initDomTreeTime：请求完毕至 DOM 加载的耗时，在加载 DOM 并执行网页的阻塞脚本时触发
 * readyStart：准备新页面的耗时
 * redirectCount：重定向次数
 * compression：传输内容压缩百分比
-* redirectTime：重定向的时间，拒绝重定向，例如 https://pwstrick.com/ 就不该写成 http://pwstrick.com
+* redirectTime：重定向的时间，拒绝重定向，例如 https://pwstrick.com 就不该写成 http://pwstrick.com
 * appcacheTime：DNS缓存耗时
 * lookupDomainTime：DNS查询耗时
 * connectSslTime：SSL连接耗时
