@@ -104,8 +104,10 @@ The above 4 parameters are required to be passed. For the specific functions, pl
 
 In order to configure monitoring more flexibly, multiple parameters are provided.
 
-* src：required item, the background receiving address for collecting monitoring data, the default is //127.0.0.1:3000/ma.gif
-* psrc：required item, background receiving address for collecting performance parameters, //127.0.0.1:3000/pe.gif
+* src：required item, the background receiving address for collecting monitoring data, 
+    * the default is //127.0.0.1:3000/ma.gif
+* psrc：required item, background receiving address for collecting performance parameters, 
+    * the default is //127.0.0.1:3000/pe.gif
 * token：required item, project identifier, customizable, used to distinguish different monitoring projects
 * pkey：required item, the project key of performance monitoring, there may be multiple different sub-projects under one project, so that the performance of sub-projects can be monitored separately
 * subdir：a subdirectory under a project, used to stitch the script address of the source map
@@ -113,7 +115,8 @@ In order to configure monitoring more flexibly, multiple parameters are provided
 * version：version, easy to trace the source of the error
 * record：recording configuration
     * isOpen：whether to enable recording, the default is true
-    * src：rrweb address, the default is the official CDN address //cdn.jsdelivr.net/npm/rrweb@latest/dist/rrweb.min.js
+    * src：rrweb address, 
+        * the default is the official CDN address //cdn.jsdelivr.net/npm/rrweb@latest/dist/rrweb.min.js
 * error：wrong configuration
     * isFilterErrorFunc：The script error that needs to be filtered, the default is null, you can set a function, refer to demo/error.html
     * isFilterPromiseFunc：the Promise error that needs to be filtered, the default is null, you can set a function, refer to demo/error.html
@@ -148,7 +151,8 @@ shin.setParams({
 shin.setParams({
   validateCrash: () => {    // () => TypeCrashResult
     /**
-     * When the content in the root tag is empty, it can be considered that the page has crashed
+     * When the content in the root tag is empty, 
+     * it can be considered that the page has crashed
      * Response value format: {success: true, prompt:'prompt'}
      */
     return {
