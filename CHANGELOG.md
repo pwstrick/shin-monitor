@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 10:17:17
- * @LastEditTime: 2023-01-17 17:42:28
+ * @LastEditTime: 2023-01-18 18:29:51
  * @Description: 变更日志
  * @FilePath: /web/shin-monitor/CHANGELOG.md
 -->
@@ -30,3 +30,6 @@
 
 ## 1.0.7（2023-01-17）
 * 修复 performance.timing 计算错误的情况
+
+## 1.0.8（2023-01-18）
+* 修改性能参数的计算 将部分 fetchStart 替换成 startTime
