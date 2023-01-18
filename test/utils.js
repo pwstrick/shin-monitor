@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 11:38:07
- * @LastEditTime: 2023-01-12 15:17:58
+ * @LastEditTime: 2023-01-18 17:30:37
  * @Description: 
  * @FilePath: /web/shin-monitor/test/utils.js
  */
@@ -49,5 +49,12 @@ describe('assign', function() {
     expect(Object.assign({a: 1}, {b: 1})).to.only.have.keys('a', 'b');
     expect(Object.assign({a: 1}, {a: 2})).to.eql({ a: 2});
     expect(Object.assign({a: { c: 2 }}, {a: { c: 1}})).to.eql({ a: { c: 1}});
+  });
+});
+describe('removeQuote', function() {
+  it('html', function() {
+    expect(utils.removeQuote('<a href="">')).to.be.equal('<a href=>');
+    expect(utils.removeQuote('<a href="1">')).to.be.equal('<a href=1>');
+    expect(utils.removeQuote('<a href=""></a><div class=""></div>')).to.be.equal('<a href=></a><div class=></div>');
   });
 });
