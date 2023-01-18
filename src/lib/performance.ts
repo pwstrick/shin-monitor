@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 18:18:45
- * @LastEditTime: 2023-01-17 17:39:39
+ * @LastEditTime: 2023-01-18 18:23:27
  * @Description: 性能监控
  * @FilePath: /web/shin-monitor/src/lib/performance.ts
  */
@@ -189,34 +189,39 @@ class PerformanceMonitor {
 
     /**
      * 首次可交互时间
+     * 2023-01-18 fetchStart 替换成 navigationStart，因为 domInteractive 有可能是 0，而 fetchStart 不是
+     * 这样得到的 interactiveTime 将是负数
      */
-    api.interactiveTime = timing.domInteractive - timing.fetchStart;
+    api.interactiveTime = timing.domInteractive - navigationStart;
 
     /**
      * 用户可操作时间（DOM Ready时间）
      * 在初始HTML文档已完全加载和解析时触发（无需等待图像和iframe完成加载）
      * 紧跟在DOMInteractive之后。
      * https://www.dareboost.com/en/doc/website-speed-test/metrics/dom-content-loaded-dcl
+     * 2023-01-18 fetchStart 替换成 navigationStart，理由 interactiveTime 相同
      */
-    api.domReadyTime = timing.domContentLoadedEventEnd - timing.fetchStart;
+    api.domReadyTime = timing.domContentLoadedEventEnd - navigationStart;
 
     /**
      * 白屏时间
      * FP（First Paint）首次渲染的时间
+     * 2023-01-18 将 fetch 替换成 navigationStart，为了能更准确的计算出真实的白屏时间
      */
     var paint = performance.getEntriesByType('paint');
     if (paint && timing.entryType && paint[0]) {
-      api.firstPaint = paint[0].startTime - timing.fetchStart;
+      api.firstPaint = paint[0].startTime - navigationStart;
       api.firstPaintStart = paint[0].startTime;   // 记录白屏时间点
     } else {
-      api.firstPaint = timing.responseEnd - timing.fetchStart;
+      api.firstPaint = timing.responseEnd - navigationStart;
     }
 
     /**
      * FCP（First Contentful Paint）首次有实际内容渲染的时间
+     * 2023-01-18 fetchStart 替换成 navigationStart，理由和 FP 相同
      */
     if (paint && timing.entryType && paint[1]) {
-      api.firstContentfulPaint = paint[1].startTime - timing.fetchStart;
+      api.firstContentfulPaint = paint[1].startTime - navigationStart;
       api.firstContentfulPaintStart = paint[1].startTime;   // 记录 FCP 时间点
     } else {
       api.firstContentfulPaint = 0;
