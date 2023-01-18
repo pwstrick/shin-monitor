@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 18:18:45
- * @LastEditTime: 2023-01-18 18:23:27
+ * @LastEditTime: 2023-01-18 18:33:48
  * @Description: 性能监控
  * @FilePath: /web/shin-monitor/src/lib/performance.ts
  */
@@ -206,22 +206,20 @@ class PerformanceMonitor {
     /**
      * 白屏时间
      * FP（First Paint）首次渲染的时间
-     * 2023-01-18 将 fetch 替换成 navigationStart，为了能更准确的计算出真实的白屏时间
      */
     var paint = performance.getEntriesByType('paint');
     if (paint && timing.entryType && paint[0]) {
-      api.firstPaint = paint[0].startTime - navigationStart;
+      api.firstPaint = paint[0].startTime - timing.fetchStart;
       api.firstPaintStart = paint[0].startTime;   // 记录白屏时间点
     } else {
-      api.firstPaint = timing.responseEnd - navigationStart;
+      api.firstPaint = timing.responseEnd - timing.fetchStart;
     }
 
     /**
      * FCP（First Contentful Paint）首次有实际内容渲染的时间
-     * 2023-01-18 fetchStart 替换成 navigationStart，理由和 FP 相同
      */
     if (paint && timing.entryType && paint[1]) {
-      api.firstContentfulPaint = paint[1].startTime - navigationStart;
+      api.firstContentfulPaint = paint[1].startTime - timing.fetchStart;
       api.firstContentfulPaintStart = paint[1].startTime;   // 记录 FCP 时间点
     } else {
       api.firstContentfulPaint = 0;
