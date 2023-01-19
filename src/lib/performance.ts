@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 18:18:45
- * @LastEditTime: 2023-01-19 09:51:54
+ * @LastEditTime: 2023-01-19 14:00:42
  * @Description: 性能监控
  * @FilePath: /web/shin-monitor/src/lib/performance.ts
  */
@@ -196,8 +196,8 @@ class PerformanceMonitor {
 
     /**
      * 用户可操作时间（DOM Ready时间）
-     * 在初始HTML文档已完全加载和解析时触发（无需等待图像和iframe完成加载）
-     * 紧跟在DOMInteractive之后。
+     * 在初始 HTML 文档已完全加载和解析时触发（无需等待图像和 iframe 完成加载）
+     * 紧跟在 DOMInteractive 之后。
      * https://www.dareboost.com/en/doc/website-speed-test/metrics/dom-content-loaded-dcl
      * 2023-01-18 fetchStart 替换成 navigationStart，理由 interactiveTime 相同
      */
@@ -226,17 +226,18 @@ class PerformanceMonitor {
     }
 
     /**
-     * 解析DOM树结构的时间
-     * DOM中的所有脚本，包括具有async属性的脚本，都已执行。加载DOM中定义的所有页面静态资源（图像、iframe等）
-     * loadEventStart紧跟在domComplete之后。在大多数情况下，这2个指标是相等的。
-     * 在加载事件开始之前可能引入的唯一额外延迟将由onReadyStateChange的处理引起。
+     * 解析 DOM 树结构的时间
+     * DOM 中的所有脚本，包括具有 async 属性的脚本，都已执行。加载 DOM 中定义的所有页面静态资源（图像、iframe 等）
+     * loadEventStart 紧跟在 domComplete 之后。在大多数情况下，这 2 个指标是相等的。
+     * 在加载事件开始之前可能引入的唯一额外延迟将由 onReadyStateChange 的处理引起。
      * https://www.dareboost.com/en/doc/website-speed-test/metrics/dom-complete
+     * 有可能是负数，domComplete 有可能是 0，此时文档没有完全加载
      */
     api.parseDomTime = timing.domComplete - timing.domInteractive;
 
     /**
-     * 请求完毕至DOM加载耗时
-     * 在加载DOM并执行网页的阻塞脚本时触发
+     * 请求完毕至 DOM 加载耗时
+     * 在加载 DOM 并执行网页的阻塞脚本时触发
      * 在这个阶段，具有defer属性的脚本还没有执行，某些样式表加载可能仍在处理并阻止页面呈现
      * https://www.dareboost.com/en/doc/website-speed-test/metrics/dom-interactive
      */
