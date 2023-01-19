@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 10:17:17
- * @LastEditTime: 2023-01-18 18:35:39
+ * @LastEditTime: 2023-01-19 09:56:41
  * @Description: 变更日志
  * @FilePath: /web/shin-monitor/CHANGELOG.md
 -->
@@ -36,3 +36,6 @@
 
 ## 1.0.9（2023-01-18）
 * 修改白屏时间的计算规则
+
+## 1.0.10（2023-01-19）
+* 修正 loadTime 的计算
