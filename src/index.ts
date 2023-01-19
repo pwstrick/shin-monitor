@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 10:17:17
- * @LastEditTime: 2023-01-17 11:00:40
+ * @LastEditTime: 2023-01-19 16:49:11
  * @Description: 入口，自动初始化
  * @FilePath: /web/shin-monitor/src/index.ts
  */
@@ -66,9 +66,17 @@ function setParams(params: TypeShinParams): TypeShinParams {
     return null;
   }
   const combination = defaults;
-  // 只重置 params 中的参数
+  // 为所有参数赋默认值
   for(const key in params) {
-    combination[key] = params[key];
+    const value = params[key];
+    // 当参数值是对象时，需要对其属性挨个赋值
+    if(typeof value === 'object') {
+      for(const childKey in value) {
+        combination[key][childKey] = value[childKey];
+      }
+    }else {
+      combination[key] = value;
+    }
   }
   // 埋入自定义的身份信息
   const { getFunc } = combination.identity;

@@ -139,7 +139,7 @@ shin.setParams({
 ```js
 shin.setParams({
   console: {
-    isFilterFunc: (desc) =>     // (desc: string) => boolean
+    isFilterLogFunc: (desc) =>     // (desc: string) => boolean
         desc && desc.indexOf("Agora-SDK") >= 0
   }
 });
