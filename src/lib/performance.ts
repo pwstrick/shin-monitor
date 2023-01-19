@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 18:18:45
- * @LastEditTime: 2023-01-18 18:33:48
+ * @LastEditTime: 2023-01-19 09:51:54
  * @Description: 性能监控
  * @FilePath: /web/shin-monitor/src/lib/performance.ts
  */
@@ -353,18 +353,21 @@ class PerformanceMonitor {
    * 注册 laod 和页面隐藏事件
    */
   public registerLoadAndHideEvent(): void {
+    const send = (): void => {
+      const data = this.getTimes();
+      if(this.isNeedHideEvent && data) {
+        this.http.sendPerformance(data);
+        this.isNeedHideEvent = false;
+      }
+    };
     /**
      * 在 load 事件中，上报性能参数
      * 该事件不可取消，也不会冒泡
      */
     window.addEventListener('load', (): void => {
-      const data = this.getTimes();
       // 加定时器是避免在上报性能参数时，loadEventEnd 为 0，因为事件还没执行完毕
       setTimeout((): void => {
-        if(data) {
-          this.http.sendPerformance(data);
-          this.isNeedHideEvent = false;
-        }
+        send();
       }, 0);
     });
     /**
@@ -374,11 +377,7 @@ class PerformanceMonitor {
     const isIOS = !!navigator.userAgent.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
     const eventName = isIOS ? 'pagehide' : 'beforeunload';
     window.addEventListener(eventName, (): void => {
-      const data = this.getTimes();
-      if(this.isNeedHideEvent && data) {
-        this.http.sendPerformance(data);
-        this.isNeedHideEvent = false;
-      }
+      send();
     }, false);
   }
 }
