@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 18:18:45
- * @LastEditTime: 2023-01-14 20:34:49
+ * @LastEditTime: 2023-01-25 13:53:16
  * @Description: 通信
  * @FilePath: /web/shin-monitor/src/lib/http.ts
  */
@@ -50,8 +50,8 @@ class Http {
    * 改成POST请求
    */
   public send(data: TypeSendParams, callback?: ParamsCallback): void {
-    // var ts = new Date().getTime().toString();
-    // var img = new Image(0, 0);
+    // const ts = new Date().getTime().toString();
+    // const img = new Image(0, 0);
     // img.src = shin.param.src + "?m=" + _paramify(data) + "&ts=" + ts;
     const m = this.paramify(data);
     // 大于8000的长度，就不在上报，废弃掉
@@ -99,8 +99,8 @@ class Http {
    */
   public sendPerformance(data: TypeCaculateTiming): void {
     // 如果传了数据就使用该数据，否则读取性能参数，并格式化为字符串
-    var str = this.paramifyPerformance(data);
-    var rate = randomNum(10, 1); // 选取1~10之间的整数
+    const str = this.paramifyPerformance(data);
+    const rate = randomNum(10, 1); // 选取1~10之间的整数
     if (this.params.rate >= rate && this.params.pkey) {
       navigator.sendBeacon(this.params.psrc, str);
     }

@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 18:18:45
- * @LastEditTime: 2023-01-19 14:00:42
+ * @LastEditTime: 2023-01-25 13:51:03
  * @Description: 性能监控
  * @FilePath: /web/shin-monitor/src/lib/performance.ts
  */
@@ -128,8 +128,8 @@ class PerformanceMonitor {
    * https://developer.mozilla.org/en-US/docs/Glossary/First_input_delay
    */
   public observerFID(): void {
-    var fidType = 'first-input';
-    var isSupport = this.checkSupportPerformanceObserver(fidType);
+    const fidType = 'first-input';
+    const isSupport = this.checkSupportPerformanceObserver(fidType);
     // 浏览器兼容判断
     if(!isSupport) {
       return;
@@ -207,7 +207,7 @@ class PerformanceMonitor {
      * 白屏时间
      * FP（First Paint）首次渲染的时间
      */
-    var paint = performance.getEntriesByType('paint');
+    const paint = performance.getEntriesByType('paint');
     if (paint && timing.entryType && paint[0]) {
       api.firstPaint = paint[0].startTime - timing.fetchStart;
       api.firstPaintStart = paint[0].startTime;   // 记录白屏时间点
@@ -279,7 +279,7 @@ class PerformanceMonitor {
     /**
      * SSL连接耗时
      */
-    var sslTime = timing.secureConnectionStart;
+    const sslTime = timing.secureConnectionStart;
     api.connectSslTime = sslTime > 0 ? timing.connectEnd - sslTime : 0;
 
     /**

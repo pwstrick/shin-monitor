@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 10:17:17
- * @LastEditTime: 2023-01-14 18:12:56
+ * @LastEditTime: 2023-01-25 13:52:50
  * @Description: FMP的计算
  * @FilePath: /web/shin-monitor/src/lib/fmp.ts
  */
@@ -54,13 +54,13 @@ class FMP {
    * 为 HTML 元素打标记，记录是哪一次的 DOM 更新
    */
   private doTag(target: Element, callbackCount: number, mutationsList: Element[]): void {
-    var childrenLen = target.children ? target.children.length : 0;
+    const childrenLen = target.children ? target.children.length : 0;
     // 结束递归
     if(childrenLen === 0)
       return;
-    for (var children = target.children, i = childrenLen - 1; i >= 0; i--) {
-      var child = children[i];
-      var tagName = child.tagName;
+    for (let children = target.children, i = childrenLen - 1; i >= 0; i--) {
+      const child = children[i];
+      const tagName = child.tagName;
       if (child.getAttribute(FMP_ATTRIBUTE) === null && 
             IGNORE_TAG_SET.indexOf(tagName) === -1  // 过滤掉忽略的元素
       ) {
@@ -75,7 +75,7 @@ class FMP {
    * 是否超出屏幕外
    */
   private isOutScreen(node: Element): boolean {
-    var { left, top } = node.getBoundingClientRect();
+    const { left, top } = node.getBoundingClientRect();
     return  WH < top || WW < left;
   }
   /**
@@ -128,8 +128,8 @@ class FMP {
    * 计算元素分值
    */
   private caculateScore(node: Element): number {
-    var { width, height } = node.getBoundingClientRect();
-    var weight = TAG_WEIGHT_MAP[node.tagName] || 1;
+    const { width, height } = node.getBoundingClientRect();
+    let weight = TAG_WEIGHT_MAP[node.tagName] || 1;
     if (
       weight === 1 &&
         window.getComputedStyle(node)['background-image'] && // 读取CSS样式中的背景图属性

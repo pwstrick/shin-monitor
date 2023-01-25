@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 14:24:20
- * @LastEditTime: 2023-01-16 10:53:29
+ * @LastEditTime: 2023-01-25 13:51:57
  * @Description: 用户行为监控
  * @FilePath: /web/shin-monitor/src/lib/action.ts
  */
@@ -26,9 +26,9 @@ class ActionMonitor {
    * 递归的将数字四舍五入小数点后两位
    */
   private handleNumber(obj: any): any {
-    var type = typeof obj;
+    const type = typeof obj;
     if (type === 'object' && type !== null) {
-      for (var key in obj) {
+      for (const key in obj) {
         // 当key是只读属性时，就不能直接赋值了
         obj[key] = this.handleNumber(obj[key]);
       }
@@ -129,8 +129,8 @@ class ActionMonitor {
     if (effectiveType) {
       return { bandwidth: 0, type: effectiveType.toUpperCase() };
     }
-    var types = 'Unknown Ethernet WIFI 2G 3G 4G'.split(' ');
-    var info = { bandwidth: 0, type: '' };
+    const types = 'Unknown Ethernet WIFI 2G 3G 4G'.split(' ');
+    const info = { bandwidth: 0, type: '' };
     if (connection && connection.type) {
       info.type = types[connection.type];
     }
@@ -156,8 +156,8 @@ class ActionMonitor {
    */
   public injectEvent(): void {
     window.addEventListener('click', this.handleEvent('click', (e: Event): boolean =>{
-      var node = e.target as HTMLElement;
-      var nodeName = node.nodeName.toLowerCase();
+      const node = e.target as HTMLElement;
+      const nodeName = node.nodeName.toLowerCase();
       // 若是 body 元素，则不记录
       if(nodeName === 'body') {
         return false;
@@ -177,7 +177,7 @@ class ActionMonitor {
     const _XMLHttpRequest = (window as any).XMLHttpRequest; // 保存原生的XMLHttpRequest
     // 覆盖XMLHttpRequest
     (window as any).XMLHttpRequest = (): XMLHttpRequest => {
-      var req = new _XMLHttpRequest();  // 调用原生的XMLHttpRequest
+      const req = new _XMLHttpRequest();  // 调用原生的XMLHttpRequest
       monitorXHR(req);                  // 埋入我们的间谍
       return req;
     };
