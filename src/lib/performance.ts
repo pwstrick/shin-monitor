@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 18:18:45
- * @LastEditTime: 2023-01-25 13:51:03
+ * @LastEditTime: 2023-02-27 18:17:50
  * @Description: 性能监控
  * @FilePath: /web/shin-monitor/src/lib/performance.ts
  */
@@ -48,6 +48,7 @@ class PerformanceMonitor {
    * 读取 timing 对象，兼容新版和旧版
    */
   private getTiming(): TypeTiming {
+    // 在 iOS 设备中，若 SDK 涉及跨域，那就需要声明 timing-allow-origin 首部，否则 PerformanceResourceTiming 中的大部分属性都是 0
     const timing = (performance.getEntriesByType('navigation')[0] || performance.timing) as TypePerformanceTiming;
     let now = 0;
     if (!timing) {
