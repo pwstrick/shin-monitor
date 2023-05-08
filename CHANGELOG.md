@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 10:17:17
- * @LastEditTime: 2023-01-19 17:03:04
+ * @LastEditTime: 2023-05-08 16:28:55
  * @Description: 变更日志
  * @FilePath: /web/shin-monitor/CHANGELOG.md
 -->
@@ -42,3 +42,6 @@
 
 ## 1.0.11（2023-01-19）
 * 修复默认参数赋值失败
+
+## 1.0.12（2023-05-08）
+* 监控增加 referer 字段，记录来源地址
