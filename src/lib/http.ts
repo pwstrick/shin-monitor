@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 18:18:45
- * @LastEditTime: 2023-01-25 13:53:16
+ * @LastEditTime: 2023-05-08 16:10:55
  * @Description: 通信
  * @FilePath: /web/shin-monitor/src/lib/http.ts
  */
@@ -42,6 +42,7 @@ class Http {
     obj.token = this.params.token;
     obj.subdir = this.params.subdir;
     obj.identity = this.getIdentity();
+    obj.referer = location.href;  // 来源地址，即当前页面地址
     // return encodeURIComponent(JSON.stringify(obj));
     return JSON.stringify(obj);
   }

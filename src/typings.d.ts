@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 18:03:08
- * @LastEditTime: 2023-01-16 10:53:35
+ * @LastEditTime: 2023-05-08 16:10:06
  * @Description: 自定义的声明文件
  * @FilePath: /web/shin-monitor/src/typings.d.ts
  */
@@ -113,6 +113,7 @@ interface TypeResourceDesc {
 export interface TypeErrorData {
   type: string;
   desc: string | TypeCrashDesc | TypeRuntimeDesc | TypeResourceDesc | TypeAjaxDesc;
+  referer?: string; // 来源地址，即当前页面地址
   version?: string;
   lineno?: number;
   colno?: number;
@@ -150,6 +151,7 @@ export interface TypeSendParams {
   token?: string;
   subdir?: string;
   identity?: string;
+  referer?: string;
   data: TypeErrorData | TypeAjaxData;
 }
 /*************************************************************************
