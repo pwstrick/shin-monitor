@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 10:17:17
- * @LastEditTime: 2023-05-11 14:43:02
+ * @LastEditTime: 2023-05-11 15:19:34
  * @Description: 变更日志
  * @FilePath: /web/shin-monitor/CHANGELOG.md
 -->
@@ -48,3 +48,6 @@
 
 ## 1.0.13（2023-05-11）
 * 不再忽略 dist 目录
+
+## 1.0.14（2023-05-11）
+* 增加安装说明
