@@ -84,6 +84,15 @@ $ npm run test
 
 ## :rocket: 使用指南
 
+常规安装
+```
+npm install shin-monitor
+```
+或使用 CDN，shin-monitor 后跟的是版本号，[unpkg](https://www.unpkg.com/) 适用于所有发布的 npm 包。
+```html
+<script src="https://unpkg.com/shin-monitor@1.0.13/dist/shin.umd.js"></script>
+```
+
 在正确引入 shin-monitor 之后，就需要调用 setParams() 方法，将必要的参数传入后，就可以开始监控了。
 ```js
 shin.setParams({
