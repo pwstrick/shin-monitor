@@ -15,7 +15,7 @@ However, the online scene I am in may not cover all situations, so shin-monitor 
 - Performance parameters include first screen, white screen, LCP, FMP, resource information, etc.
 - In my [column](https://www.kancloud.cn/pwstrick/fe-questions/2363166), the iterative process of developing monitoring scripts is recorded in detail
 
-## :smiley: Installation
+## :smiley: Quick Installation
 
 The usuall installation
 ```

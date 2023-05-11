@@ -11,7 +11,7 @@
 - 性能参数包括首屏、白屏、LCP、FMP、资源信息等
 - 在我的[专栏](https://www.kancloud.cn/pwstrick/fe-questions/2363166)中，详细记录了监控脚本的研发迭代过程
 
-## :smiley: 安装
+## :smiley: 快速安装
 常规安装
 ```
 npm install shin-monitor
