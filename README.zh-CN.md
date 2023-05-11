@@ -88,7 +88,10 @@ $ npm run test
 ```
 npm install shin-monitor
 ```
-或使用 CDN，shin-monitor 后跟的是版本号，[unpkg](https://www.unpkg.com/) 适用于所有发布的 npm 包。
+
+或使用 [unpkg](https://www.unpkg.com/) 提供的 CDN，shin-monitor 后跟的是版本号，可自行选择版本，建议使用最新版本。
+
+若不填版本号会自动做 302 跳转，跳转至最新版本。
 ```html
 <script src="https://unpkg.com/shin-monitor@1.0.13/dist/shin.umd.js"></script>
 ```
