@@ -11,6 +11,18 @@
 - 性能参数包括首屏、白屏、LCP、FMP、资源信息等
 - 在我的[专栏](https://www.kancloud.cn/pwstrick/fe-questions/2363166)中，详细记录了监控脚本的研发迭代过程
 
+常规安装
+```
+npm install shin-monitor
+```
+
+或使用 [unpkg](https://www.unpkg.com/) 提供的 CDN，shin-monitor 后跟的是版本号，可自行选择版本，建议使用最新版本。
+
+若不填版本号会自动做 302 跳转，跳转至最新版本。
+```html
+<script src="https://unpkg.com/shin-monitor@1.0.13/dist/shin.umd.js"></script>
+```
+
 ## :open_file_folder: 目录介绍
 
 ```
@@ -83,18 +95,6 @@ $ npm run test
 不过目前的测试用例还不够完善。测试框架使用的是 [mocha.js](https://mochajs.org/)，断言使用的是 [expect.js](https://github.com/Automattic/expect.js)。
 
 ## :rocket: 使用指南
-
-常规安装
-```
-npm install shin-monitor
-```
-
-或使用 [unpkg](https://www.unpkg.com/) 提供的 CDN，shin-monitor 后跟的是版本号，可自行选择版本，建议使用最新版本。
-
-若不填版本号会自动做 302 跳转，跳转至最新版本。
-```html
-<script src="https://unpkg.com/shin-monitor@1.0.13/dist/shin.umd.js"></script>
-```
 
 在正确引入 shin-monitor 之后，就需要调用 setParams() 方法，将必要的参数传入后，就可以开始监控了。
 ```js

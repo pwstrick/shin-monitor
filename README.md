@@ -15,6 +15,18 @@ However, the online scene I am in may not cover all situations, so shin-monitor 
 - Performance parameters include first screen, white screen, LCP, FMP, resource information, etc.
 - In my [column](https://www.kancloud.cn/pwstrick/fe-questions/2363166), the iterative process of developing monitoring scripts is recorded in detail
 
+The usuall installation
+```
+npm install shin-monitor
+```
+
+Or use the CDN provided by [unpkg](https://www.unpkg.com/), shin-monitor is followed by the version number, you can choose your own version, we recommend using the latest version.
+
+If you do not fill in the version number, it will automatically do a 302 jump and jump to the latest version.
+```html
+<script src="https://unpkg.com/shin-monitor@1.0.13/dist/shin.umd.js"></script>
+```
+
 ## :open_file_folder: Directory
 
 ```
@@ -87,18 +99,6 @@ $ npm run test
 However, the current test cases are not perfect enough. The testing framework uses [mocha.js](https://mochajs.org/) and the assertions use [expect.js](https://github.com/Automattic/expect.js).
 
 ## :rocket: Usage
-
-The usuall installation
-```
-npm install shin-monitor
-```
-
-Or use the CDN provided by [unpkg](https://www.unpkg.com/), shin-monitor is followed by the version number, you can choose your own version, we recommend using the latest version.
-
-If you do not fill in the version number, it will automatically do a 302 jump and jump to the latest version.
-```html
-<script src="https://unpkg.com/shin-monitor@1.0.13/dist/shin.umd.js"></script>
-```
 
 After correctly introducing shin-monitor, you need to call the setParams() method, and after passing in the necessary parameters, you can start monitoring.
 ```js
