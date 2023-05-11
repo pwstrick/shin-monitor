@@ -3,7 +3,6 @@
 .rpt2_cache
 coverage
 node_modules
-dist
 .nyc_output
 typings
 *custom.ts
