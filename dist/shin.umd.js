@@ -704,11 +704,23 @@
                       if (responseType && (responseType != 'text' && responseType != 'json')) {
                           return;
                       }
+                      var responseText = void 0; //响应内容
+                      try {
+                          if (responseType === 'text') {
+                              responseText = req.responseText; // 响应类型是 text，就读取 responseText 属性
+                          }
+                          else {
+                              responseText = JSON.stringify(req.response); // 响应类型是 json，就读取 response 属性
+                          }
+                      }
+                      catch (e) {
+                          responseText = '';
+                      }
                       var end = getNowTimestamp(); // 结束时间
                       req.ajax.status = req.status; // 状态码
                       // 请求成功
                       if ((req.status >= 200 && req.status < 300) || req.status == 304) {
-                          req.ajax.endBytes = kb(req.responseText.length * 2) + "KB"; // KB
+                          req.ajax.endBytes = kb(responseText.length * 2) + "KB"; // KB
                       }
                       else {
                           // 请求失败
@@ -722,7 +734,7 @@
                       req.ajax.interval = rounded(end - start, 2) + "ms"; // 单位毫秒
                       req.ajax.network = self.network();
                       // 只记录6000个字符以内的响应限制，以便让 MySQL 表中的 message 字段能成功存储
-                      req.responseText.length <= 6000 && (req.ajax.response = req.responseText);
+                      responseText.length <= 6000 && (req.ajax.response = responseText);
                       // 过滤无意义的通信
                       if (isFilterSendFunc && isFilterSendFunc(req)) {
                           return;
