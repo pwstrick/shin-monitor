@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 10:17:17
- * @LastEditTime: 2023-06-16 15:57:14
+ * @LastEditTime: 2023-06-16 16:20:20
  * @Description: 变更日志
  * @FilePath: /web/shin-monitor/CHANGELOG.md
 -->
@@ -54,3 +54,6 @@
 
 ## 1.0.15（2023-06-16）
 * 修复 Failed to read the 'responseText' property from 'XMLHttpRequest'
+
+## 1.0.16（2023-06-16）
+* 格式化 Ajax 中的 Response
