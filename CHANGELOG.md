@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 10:17:17
- * @LastEditTime: 2023-05-11 15:19:34
+ * @LastEditTime: 2023-06-16 15:57:14
  * @Description: 变更日志
  * @FilePath: /web/shin-monitor/CHANGELOG.md
 -->
@@ -51,3 +51,6 @@
 
 ## 1.0.14（2023-05-11）
 * 增加安装说明
+
+## 1.0.15（2023-06-16）
+* 修复 Failed to read the 'responseText' property from 'XMLHttpRequest'
