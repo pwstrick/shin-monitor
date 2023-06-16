@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 14:24:20
- * @LastEditTime: 2023-06-16 15:50:22
+ * @LastEditTime: 2023-06-16 16:08:42
  * @Description: 用户行为监控
  * @FilePath: /web/shin-monitor/src/lib/action.ts
  */
@@ -193,14 +193,18 @@ class ActionMonitor {
             return;
           }
           let responseText: string; //响应内容
+          let response: any; // 响应内容（对象或字符串）
           try {
             if(responseType === 'text') {
               responseText = req.responseText;  // 响应类型是 text，就读取 responseText 属性
+              response = req.responseText;
             }else {
               responseText = JSON.stringify(req.response);  // 响应类型是 json，就读取 response 属性
+              response = req.response;
             }
           }catch(e) {
             responseText = '';
+            response = {};
           }
           const end = getNowTimestamp();    // 结束时间
           req.ajax.status = req.status;     // 状态码
@@ -219,7 +223,7 @@ class ActionMonitor {
           req.ajax.interval = `${rounded(end - start, 2)}ms`; // 单位毫秒
           req.ajax.network = self.network();
           // 只记录6000个字符以内的响应限制，以便让 MySQL 表中的 message 字段能成功存储
-          responseText.length <= 6000 && (req.ajax.response = responseText);
+          responseText.length <= 6000 && (req.ajax.response = response);
           // 过滤无意义的通信
           if (isFilterSendFunc && isFilterSendFunc(req)) { 
             return;

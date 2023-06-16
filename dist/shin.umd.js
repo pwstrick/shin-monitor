@@ -705,16 +705,20 @@
                           return;
                       }
                       var responseText = void 0; //响应内容
+                      var response = void 0; // 响应内容（对象或字符串）
                       try {
                           if (responseType === 'text') {
                               responseText = req.responseText; // 响应类型是 text，就读取 responseText 属性
+                              response = req.responseText;
                           }
                           else {
                               responseText = JSON.stringify(req.response); // 响应类型是 json，就读取 response 属性
+                              response = req.response;
                           }
                       }
                       catch (e) {
                           responseText = '';
+                          response = {};
                       }
                       var end = getNowTimestamp(); // 结束时间
                       req.ajax.status = req.status; // 状态码
@@ -734,7 +738,7 @@
                       req.ajax.interval = rounded(end - start, 2) + "ms"; // 单位毫秒
                       req.ajax.network = self.network();
                       // 只记录6000个字符以内的响应限制，以便让 MySQL 表中的 message 字段能成功存储
-                      responseText.length <= 6000 && (req.ajax.response = responseText);
+                      responseText.length <= 6000 && (req.ajax.response = response);
                       // 过滤无意义的通信
                       if (isFilterSendFunc && isFilterSendFunc(req)) {
                           return;
@@ -1408,6 +1412,151 @@
       return combination;
   }
 
-  return shin;
+  /**
+   * 判断是否在热拉APP中
+   */
+  function isRelaApp() {
+      var reg = /theL\s?\//i;
+      return reg.test(navigator.userAgent);
+  }
+  /**
+   * 根据不同环境配置不同的后台采用地址
+   */
+  function getEnv() {
+      var host = location.host;
+      var env = 'production';
+      if (host.indexOf('test-') >= 0) {
+          env = 'test';
+      }
+      else if (host.indexOf('pre-') >= 0) {
+          env = 'pre';
+      }
+      else if (host.indexOf('localhost:') >= 0) {
+          env = 'local';
+      }
+      var src;
+      var isOpenConsole = true;
+      switch (env) {
+          case 'test':
+              src = 'test-web-api.rela.me';
+              break;
+          case 'pre':
+              src = 'pre-web-api.rela.me';
+              break;
+          case 'production':
+              src = 'web-api.rela.me';
+              break;
+          default:
+              src = '127.0.0.1:3000';
+              isOpenConsole = false; //本地调试的时候关闭对 console 的监控
+              break;
+      }
+      var ma = "//" + src + "/ma.gif";
+      var pe = "//" + src + "/pe.gif";
+      return { ma: ma, pe: pe, isOpenConsole: isOpenConsole };
+  }
+  var env = getEnv();
+  /**
+   * 原始参数，需要与传进来的参数合并
+   */
+  var originParams = {
+      src: env.ma,
+      psrc: env.pe,
+      record: {
+          isOpen: true,
+          src: '//www.fanjiao.co/files/js/rrweb.min.js'
+      },
+      error: {
+          isFilterErrorFunc: function (event) {
+              return event.message === 'Script error.'
+                  // 来自于Antd组件的错误 https://github.com/ant-design/ant-design/issues/23246
+                  || event.message === 'ResizeObserver loop limit exceeded'
+                  || (event.colno === 0 && event.message === 'SyntaxError: Unexpected token \',\'')
+                  // 一个莫名其妙的错误，发生在https://www.rela.me/game/online.html页面，怀疑是客户端导致，但不影响整体业务
+                  || (event.colno === 2 && event.message === 'Uncaught SyntaxError: Unexpected token \'<\'');
+          },
+          isFilterPromiseFunc: function (desc) {
+              return desc.status == 401 || // 过滤管理后台登录信息超时的异常
+                  desc.url.indexOf('reports/ai/logs') >= 0; // 过滤埋点异常
+          },
+      },
+      console: {
+          isOpen: env.isOpenConsole,
+          isFilterLogFunc: function (desc) {
+              // 过滤声网SDK的打印信息
+              return desc && desc.indexOf('Agora-SDK') >= 0;
+          }
+      },
+      event: {
+          isFilterClickFunc: function (element) {
+              var nodeName = element.nodeName.toLowerCase();
+              return nodeName !== 'a'
+                  && nodeName !== 'button'
+                  && nodeName !== 'li'
+                  // 先判断是否包含 indexOf 方法，再根据样式特征判断，例如菜单栏样式
+                  && (element.className.indexOf && element.className.indexOf('tabs') === -1);
+          },
+      },
+      ajax: {
+          isFilterSendFunc: function (req) {
+              return req.status >= 500 // 只传送500以内的通信
+                  || req.ajax.url === '/api/user' // 不需要监控后台身份通信
+                  || req.ajax.url.indexOf('reports/ai/logs') > -1 // 不传送埋点通信
+                  || req.ajax.url.indexOf('api/live/monitor/list') > -1 // 直播监控列表
+                  || req.ajax.url.indexOf('game/stars/SlideList') > -1 // 来自星星的你列表
+                  || req.ajax.url.indexOf('api/live/time') > -1 // 直播监控时间统计中转
+                  || req.ajax.url.indexOf('api/callback/live/time') > -1 // 直播监控时间统计
+                  || req.ajax.url.indexOf('api/v2/transpond/webrtc') > -1 // 声网的接口
+                  || req.ajax.url.indexOf('sd-rtn.com') > -1 // 声网的接口
+                  || req.ajax.url.indexOf('agora.io') > -1; // 声网的接口
+          }
+      },
+      identity: {
+          value: '',
+          // 在客户端中埋入可识别的身份信息，例如userId
+          getFunc: function (params) {
+              // 若不是热拉APP或已经指定身份信息，则返回
+              if (!isRelaApp() || params.identity.value)
+                  return;
+              // 在JSBridge成功调用后的回调函数
+              window.getMonitorUserSuccess = function (result) {
+                  try {
+                      var json = JSON.parse(result);
+                      params.identity.value = json.data.userId;
+                  }
+                  catch (e) {
+                      console.error(e.message);
+                  }
+              };
+              // 通过JSBridge读取用户信息
+              var iframe = document.createElement('iframe');
+              iframe.style.display = 'none';
+              iframe.src = 'thel://com.user/getInfo?callback=getMonitorUserSuccess';
+              /**
+               * 需要加个定时器，因为调用document.body时，DOM还未存在
+               * Uncaught TypeError: Cannot read property 'appendChild' of null
+               */
+              setTimeout(function () {
+                  document.body && document.body.appendChild(iframe);
+              }, 500);
+          },
+      },
+  };
+  // 适配之前的配置方法
+  var shinCustom = {
+      setParam: function (params) {
+          for (var key in params) {
+              originParams[key] = params[key];
+          }
+          shin.setParams(originParams);
+          shinCustom.reactError = shin.reactError;
+          shinCustom.vueError = shin.vueError;
+      },
+      reactError: null,
+      vueError: function (vue) { console.error(vue); },
+      setFirstScreen: function () { },
+  };
+
+  return shinCustom;
 
 })));
