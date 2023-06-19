@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 10:17:17
- * @LastEditTime: 2023-01-19 16:49:11
+ * @LastEditTime: 2023-06-19 11:24:07
  * @Description: 入口，自动初始化
  * @FilePath: /web/shin-monitor/src/index.ts
  */
@@ -21,6 +21,7 @@ const defaults: TypeShinParams = {
   subdir: '',                           // 一个项目下的子目录
   rate: 5,                              // 随机采样率，用于性能搜集，范围是 1~10，10 表示百分百发送
   version: '',                          // 版本，便于追查出错源
+  author: '',                           // 页面维护人员，便于追踪错源出自谁的手
   record: {
     isOpen: true,                       // 是否开启录像
     src: '//cdn.jsdelivr.net/npm/rrweb@latest/dist/rrweb.min.js'   // 录像地址

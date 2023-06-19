@@ -120,6 +120,7 @@ shin.setParams({
 * subdir：一个项目下的子目录，用于拼接 source map 的脚本地址 
 * rate：随机采样率，用于性能搜集，默认值是 5，范围在 1~10 之间，10 表示百分百发送
 * version：版本，便于追查出错源
+* author：页面维护人员，便于追踪错源出自谁的手
 * record：录像配置
     * isOpen：是否开启录像，默认是 true
     * src：rrweb 地址，默认是官方提供的 CDN 地址 //cdn.jsdelivr.net/npm/rrweb@latest/dist/rrweb.min.js

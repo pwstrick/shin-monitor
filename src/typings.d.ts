@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 18:03:08
- * @LastEditTime: 2023-05-08 16:10:06
+ * @LastEditTime: 2023-06-19 11:18:58
  * @Description: 自定义的声明文件
  * @FilePath: /web/shin-monitor/src/typings.d.ts
  */
@@ -69,6 +69,7 @@ export interface TypeShinParams {
   error?: TypeError;
   token?: string;
   ajax?: TypeAjax;
+  author?: string;
 }
 // 发送到后台格式化后的参数属性
 export interface TypeSendBody {
@@ -152,6 +153,7 @@ export interface TypeSendParams {
   subdir?: string;
   identity?: string;
   referer?: string;
+  author?: string;
   data: TypeErrorData | TypeAjaxData;
 }
 /*************************************************************************

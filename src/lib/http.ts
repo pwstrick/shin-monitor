@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 18:18:45
- * @LastEditTime: 2023-05-08 16:10:55
+ * @LastEditTime: 2023-06-19 11:18:24
  * @Description: 通信
  * @FilePath: /web/shin-monitor/src/lib/http.ts
  */
@@ -39,6 +39,7 @@ class Http {
    * https://github.com/appsignal/appsignal-frontend-monitoring
    */
   public paramify(obj: TypeSendParams): string {
+    obj.author = this.params.author;
     obj.token = this.params.token;
     obj.subdir = this.params.subdir;
     obj.identity = this.getIdentity();

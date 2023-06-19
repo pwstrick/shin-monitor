@@ -127,6 +127,7 @@ In order to configure monitoring more flexibly, multiple parameters are provided
 * subdir：a subdirectory under a project, used to stitch the script address of the source map
 * rate：Random sampling rate, used for performance collection, the default value is 5, the range is between 1 and 10, 10 means 100% sending
 * version：version, easy to trace the source of the error
+* author：page maintainers, so it's easy to track who's making the mistakes
 * record：recording configuration
     * isOpen：whether to enable recording, the default is true
     * src：rrweb address, 

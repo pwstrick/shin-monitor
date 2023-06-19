@@ -105,6 +105,7 @@ var Http = /** @class */ (function () {
      * https://github.com/appsignal/appsignal-frontend-monitoring
      */
     Http.prototype.paramify = function (obj) {
+        obj.author = this.params.author;
         obj.token = this.params.token;
         obj.subdir = this.params.subdir;
         obj.identity = this.getIdentity();
@@ -1315,7 +1316,7 @@ var PerformanceMonitor = /** @class */ (function () {
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 10:17:17
- * @LastEditTime: 2023-01-19 16:49:11
+ * @LastEditTime: 2023-06-19 11:13:32
  * @Description: 入口，自动初始化
  * @FilePath: /web/shin-monitor/src/index.ts
  */
@@ -1329,6 +1330,7 @@ var defaults = {
     subdir: '',
     rate: 5,
     version: '',
+    author: '',
     record: {
         isOpen: true,
         src: '//cdn.jsdelivr.net/npm/rrweb@latest/dist/rrweb.min.js' // 录像地址
