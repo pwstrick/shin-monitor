@@ -1,5 +1,5 @@
 /*!
- * shin-monitor 1.0.16 (https://github.com/pwstrick/shin-monitor)
+ * shin-monitor 1.1.0 (https://github.com/pwstrick/shin-monitor)
  * API https://github.com/pwstrick/shin-monitor/blob/master/doc/api.md
  * Copyright 2017-2023 pwstrick. All Rights Reserved
  * Licensed under MIT (https://github.com/pwstrick/shin-monitor/blob/master/LICENSE)
@@ -1318,7 +1318,7 @@ var PerformanceMonitor = /** @class */ (function () {
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 10:17:17
- * @LastEditTime: 2023-06-19 11:13:32
+ * @LastEditTime: 2023-06-19 11:24:07
  * @Description: 入口，自动初始化
  * @FilePath: /web/shin-monitor/src/index.ts
  */
