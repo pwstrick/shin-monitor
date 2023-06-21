@@ -775,6 +775,32 @@ var ActionMonitor = /** @class */ (function () {
     return ActionMonitor;
 }());
 
+/*! *****************************************************************************
+Copyright (c) Microsoft Corporation. All rights reserved.
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use
+this file except in compliance with the License. You may obtain a copy of the
+License at http://www.apache.org/licenses/LICENSE-2.0
+
+THIS CODE IS PROVIDED ON AN *AS IS* BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION ANY IMPLIED
+WARRANTIES OR CONDITIONS OF TITLE, FITNESS FOR A PARTICULAR PURPOSE,
+MERCHANTABLITY OR NON-INFRINGEMENT.
+
+See the Apache Version 2.0 License for specific language governing permissions
+and limitations under the License.
+***************************************************************************** */
+
+var __assign = function() {
+    __assign = Object.assign || function __assign(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+
 /*
  * @Author: strick
  * @LastEditors: strick
@@ -1102,6 +1128,36 @@ var PerformanceMonitor = /** @class */ (function () {
         // po.observe({ entryTypes: [fidType] });
     };
     /**
+     * 计算 DOM 相关的数据
+     */
+    PerformanceMonitor.prototype.countAllElementsOnPage = function () {
+        var nodes = [document.documentElement];
+        // 总节点数
+        var totalElementCount = 0;
+        // 最大节点深度
+        var maxDOMTreeDepth = 0;
+        // 最大子节点数
+        var maxChildrenCount = 0;
+        // 逐层遍历
+        while (nodes.length) {
+            maxDOMTreeDepth++;
+            var children = [];
+            for (var _i = 0, nodes_1 = nodes; _i < nodes_1.length; _i++) {
+                var node = nodes_1[_i];
+                totalElementCount++;
+                children.push.apply(children, Array.from(node.children));
+                maxChildrenCount = Math.max(maxChildrenCount, node.children.length);
+            }
+            // nodes 是一个由 HTMLElement 组成的数组
+            nodes = children;
+        }
+        return {
+            maxDOMTreeDepth: maxDOMTreeDepth,
+            maxChildrenCount: maxChildrenCount,
+            totalElementCount: totalElementCount,
+        };
+    };
+    /**
      * 请求时间统计
      * https://github.com/addyosmani/timing.js
      */
@@ -1109,7 +1165,8 @@ var PerformanceMonitor = /** @class */ (function () {
         // 出于对浏览器兼容性的考虑，仍然引入即将淘汰的 performance.timing
         var currentTiming = this.getTiming();
         var timing = currentTiming.timing;
-        var api = {}; // 时间单位 ms
+        var domCount = this.countAllElementsOnPage();
+        var api = __assign({}, domCount); // 时间单位 ms
         if (!timing) {
             return null;
         }

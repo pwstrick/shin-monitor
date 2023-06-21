@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 18:03:08
- * @LastEditTime: 2023-06-19 11:18:58
+ * @LastEditTime: 2023-06-21 14:16:06
  * @Description: 自定义的声明文件
  * @FilePath: /web/shin-monitor/src/typings.d.ts
  */
@@ -225,6 +225,9 @@ export interface TypeCaculateTiming {
   now: number;
   firstScreen: number;
   timing: TypePerformanceTiming;
+  maxDOMTreeDepth: number;
+  maxChildrenCount: number;
+  totalElementCount: number;
   // 发送到性能参数信息
   token?: string;
   pkey?: string;
@@ -237,4 +240,10 @@ export interface TypeSendResource {
   name: string;
   duration: number;
   startTime: number;
+}
+// DOM 相关数据
+export interface TypeDOMCount {
+  maxDOMTreeDepth: number;
+  maxChildrenCount: number;
+  totalElementCount: number;
 }

@@ -2,12 +2,12 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 18:18:45
- * @LastEditTime: 2023-02-27 18:17:50
+ * @LastEditTime: 2023-06-21 14:18:04
  * @Description: 性能监控
  * @FilePath: /web/shin-monitor/src/lib/performance.ts
  */
 import { TypeShinParams,TypePerformanceTiming, TypeTiming, TypeLCP,
-  TypePerformanceEntry, TypeCaculateTiming, TypeFMP} from '../typings';
+  TypePerformanceEntry, TypeCaculateTiming, TypeFMP, TypeDOMCount } from '../typings';
 import { removeQuote, rounded, getNowTimestamp } from '../utils';
 import FMP from './fmp';
 import Http from './http';
@@ -155,6 +155,35 @@ class PerformanceMonitor {
     // po.observe({ entryTypes: [fidType] });
   }
   /**
+   * 计算 DOM 相关的数据
+   */
+  private countAllElementsOnPage(): TypeDOMCount {
+    let nodes: (HTMLElement | Element)[] = [document.documentElement];
+    // 总节点数
+    let totalElementCount = 0;
+    // 最大节点深度
+    let maxDOMTreeDepth = 0;
+    // 最大子节点数
+    let maxChildrenCount = 0;
+    // 逐层遍历
+    while (nodes.length) {
+      maxDOMTreeDepth++;
+      const children: Element[] = [];
+      for (let node of nodes) {
+        totalElementCount++;
+        children.push(...Array.from(node.children));
+        maxChildrenCount = Math.max(maxChildrenCount, node.children.length);
+      }
+      // nodes 是一个由 HTMLElement 组成的数组
+      nodes = children;
+    }
+    return {
+      maxDOMTreeDepth,
+      maxChildrenCount,
+      totalElementCount,
+    };
+  }
+  /**
    * 请求时间统计
    * https://github.com/addyosmani/timing.js
    */
@@ -162,7 +191,10 @@ class PerformanceMonitor {
     // 出于对浏览器兼容性的考虑，仍然引入即将淘汰的 performance.timing
     const currentTiming = this.getTiming();
     const timing = currentTiming.timing;
-    const api: TypeCaculateTiming = {} as any; // 时间单位 ms
+    const domCount = this.countAllElementsOnPage();
+    const api: TypeCaculateTiming = {
+      ...domCount
+    } as any; // 时间单位 ms
     if (!timing) {
       return null;
     }
