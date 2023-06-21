@@ -278,6 +278,9 @@ public vueError (vue: any): void {
 * responseDocumentTime：接收文档（内容传输），开始接收文档到文档接收完成之间的耗时
 * TTFB：读取页面第一个字节的时间，包含重定向时间
 * firstScreen：首屏时间，取 LCP、FMP 和 domReadyTime 之间的最大值
+* maxDOMTreeDepth：DOM 节点的最大深度
+* maxChildrenCount：DOM 节点的最大子节点数
+* totalElementCount：DOM 的总节点数
 * timing：原始性能参数
   * 通过 [performance.getEntriesByType('navigation')\[0\]](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceNavigationTiming) 或 [performance.timing](https://developer.mozilla.org/en-US/docs/Web/API/Performance/timing) 得到的性能参数
   * fid：用户第一次与页面交互到浏览器对交互作出响应的时间

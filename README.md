@@ -287,6 +287,9 @@ Before submitting to the background, the script will calculate the collected per
 * responseDocumentTime：receive the document (content transfer), start receiving the document and complete the time between receiving the document
 * TTFB：time to read the first byte of the page, including redirection time
 * firstScreen：first screen time, take the maximum value among LCP, FMP and domReadyTime
+* maxDOMTreeDepth: the maximum depth of the DOM node
+* maxChildrenCount: the maximum number of children of the DOM node
+* totalElementCount: the total number of DOM nodes
 * timing：original performance parameters
   * Performance parameters obtained through [performance.getEntriesByType('navigation')\[0\]](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceNavigationTiming) or [performance.timing](https://developer.mozilla.org/en-US/docs/Web/API/Performance/timing)
   * fid：the time between the user's first interaction with the page and the browser's response to the interaction
