@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 10:17:17
- * @LastEditTime: 2023-06-21 14:40:28
+ * @LastEditTime: 2023-06-21 15:04:29
  * @Description: 变更日志
  * @FilePath: /web/shin-monitor/CHANGELOG.md
 -->
@@ -63,3 +63,6 @@
 
 ## 1.1.1（2023-06-21）
 * 性能监控增加 DOM 节点的计算结果
+
+## 1.1.2（2023-06-21）
+* 增加 DOM 节点计算结果的文档说明
