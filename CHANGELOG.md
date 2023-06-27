@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 10:17:17
- * @LastEditTime: 2023-06-21 15:04:29
+ * @LastEditTime: 2023-06-27 17:03:40
  * @Description: 变更日志
  * @FilePath: /web/shin-monitor/CHANGELOG.md
 -->
@@ -66,3 +66,6 @@
 
 ## 1.1.2（2023-06-21）
 * 增加 DOM 节点计算结果的文档说明
+
+## 1.2.0（2023-06-27）
+* 为媒体元素的错误增加错误原因
