@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 18:03:08
- * @LastEditTime: 2023-06-21 14:16:06
+ * @LastEditTime: 2023-06-27 16:50:03
  * @Description: 自定义的声明文件
  * @FilePath: /web/shin-monitor/src/typings.d.ts
  */
@@ -106,9 +106,10 @@ interface TypeRuntimeDesc {
   url: string;
 }
 // 资源错误的描述错误
-interface TypeResourceDesc {
+export interface TypeResourceDesc {
   url: string;
   src: string;
+  message?: string;
 }
 // 错误信息
 export interface TypeErrorData {

@@ -422,12 +422,30 @@ var ErrorMonitor = /** @class */ (function () {
      * @param  {Object} errorTarget
      */
     ErrorMonitor.prototype.formatLoadError = function (errorTarget) {
+        var desc = {
+            url: errorTarget.baseURI,
+            src: errorTarget.src || errorTarget.href
+        };
+        /**
+         * 对于媒体资源 errorTarget 会包含 error 属性，其 code 包含 4 个值
+         * MEDIA_ERR_ABORTED：表示由于用户取消操作而引发的错误（数值为 1）
+         * MEDIA_ERR_NETWORK：表示由于网络错误而引发的错误（数值为 2）
+         * MEDIA_ERR_DECODE：表示由于解码错误而引发的错误（数值为 3）
+         * MEDIA_ERR_SRC_NOT_SUPPORTED：表示由于不支持媒体资源格式而引发的错误（数值为 4）
+         */
+        if (errorTarget.error) {
+            var MEDIA_ERR = {
+                1: '用户取消操作',
+                2: '网络错误',
+                3: '解码错误',
+                4: '不支持的媒体资源格式'
+            };
+            var code = errorTarget.error.code;
+            code && (desc.message = MEDIA_ERR[code]);
+        }
         return {
             type: CONSTANT.LOAD_ERROR_TYPE[errorTarget.nodeName.toUpperCase()],
-            desc: {
-                url: errorTarget.baseURI,
-                src: errorTarget.src || errorTarget.href
-            }
+            desc: desc
             // stack: "no stack"
         };
     };
