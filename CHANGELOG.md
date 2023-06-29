@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 10:17:17
- * @LastEditTime: 2023-06-27 17:03:40
+ * @LastEditTime: 2023-06-29 17:56:16
  * @Description: 变更日志
  * @FilePath: /web/shin-monitor/CHANGELOG.md
 -->
@@ -69,3 +69,6 @@
 
 ## 1.2.0（2023-06-27）
 * 为媒体元素的错误增加错误原因
+
+## 1.3.0（2023-06-30）
+* 增加自定义异常 console.error 的监控
