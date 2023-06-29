@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 14:24:20
- * @LastEditTime: 2023-06-16 16:08:42
+ * @LastEditTime: 2023-06-29 17:32:59
  * @Description: 用户行为监控
  * @FilePath: /web/shin-monitor/src/lib/action.ts
  */
@@ -50,7 +50,7 @@ class ActionMonitor {
    */
   public injectConsole(): void {
     const { isOpen, isFilterLogFunc } = this.params.console;
-    isOpen && ['log'].forEach((level): void => {
+    isOpen && ['log', 'error'].forEach((level): void => {
       const _oldConsole = console[level];
       console[level] = (...params): void => {
         _oldConsole.apply(this, params); // 执行原先的 console 方法
@@ -71,7 +71,7 @@ class ActionMonitor {
         }
         this.handleAction(CONSTANT.ACTION_PRINT, {
           type: level,
-          desc: desc,
+          desc,
         });
       };
     });

@@ -564,7 +564,7 @@ var ActionMonitor = /** @class */ (function () {
     ActionMonitor.prototype.injectConsole = function () {
         var _this = this;
         var _a = this.params.console, isOpen = _a.isOpen, isFilterLogFunc = _a.isFilterLogFunc;
-        isOpen && ['log'].forEach(function (level) {
+        isOpen && ['log', 'error'].forEach(function (level) {
             var _oldConsole = console[level];
             console[level] = function () {
                 var params = [];
