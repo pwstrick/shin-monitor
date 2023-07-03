@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 14:24:20
- * @LastEditTime: 2023-06-29 17:32:59
+ * @LastEditTime: 2023-07-03 11:20:14
  * @Description: 用户行为监控
  * @FilePath: /web/shin-monitor/src/lib/action.ts
  */
@@ -54,9 +54,25 @@ class ActionMonitor {
       const _oldConsole = console[level];
       console[level] = (...params): void => {
         _oldConsole.apply(this, params); // 执行原先的 console 方法
+        const replaceParams = [];
+        // 对 Error 实例做特殊处理
+        for(const value of params) {
+          // 不能使用 typeof 读取实例类型
+          if(Object.prototype.toString.call(value) === '[object Error]') {
+            const errorObj = {};
+            // 遍历错误实例的属性
+            Object.getOwnPropertyNames(value).forEach((prop): void => {
+              errorObj[prop] = value[prop];
+            });
+            replaceParams.push(errorObj);
+            continue;
+          }
+          replaceParams.push(value);
+        }
         const seen = [];
         // 避免循环引用
-        const desc = JSON.stringify(params, (key, value): boolean | string | number => {
+        const desc = JSON.stringify(replaceParams, (key, value): boolean | string | number => {
+          // 对普通对象的一般处理
           if (typeof value === 'object' && value !== null) {
             if (seen.indexOf(value) >= 0) {
               return;

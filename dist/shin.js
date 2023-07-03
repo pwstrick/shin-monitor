@@ -572,9 +572,29 @@ var ActionMonitor = /** @class */ (function () {
                     params[_i] = arguments[_i];
                 }
                 _oldConsole.apply(_this, params); // 执行原先的 console 方法
+                var replaceParams = [];
+                var _loop_1 = function (value) {
+                    // 不能使用 typeof 读取实例类型
+                    if (Object.prototype.toString.call(value) === '[object Error]') {
+                        var errorObj_1 = {};
+                        // 遍历错误实例的属性
+                        Object.getOwnPropertyNames(value).forEach(function (prop) {
+                            errorObj_1[prop] = value[prop];
+                        });
+                        replaceParams.push(errorObj_1);
+                        return "continue";
+                    }
+                    replaceParams.push(value);
+                };
+                // 对 Error 实例做特殊处理
+                for (var _a = 0, params_1 = params; _a < params_1.length; _a++) {
+                    var value = params_1[_a];
+                    _loop_1(value);
+                }
                 var seen = [];
                 // 避免循环引用
-                var desc = JSON.stringify(params, function (key, value) {
+                var desc = JSON.stringify(replaceParams, function (key, value) {
+                    // 对普通对象的一般处理
                     if (typeof value === 'object' && value !== null) {
                         if (seen.indexOf(value) >= 0) {
                             return;
