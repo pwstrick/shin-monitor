@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 14:21:36
- * @LastEditTime: 2023-06-27 16:55:44
+ * @LastEditTime: 2023-07-03 18:00:53
  * @Description: 监控各类错误
  * @FilePath: /web/shin-monitor/src/lib/error.ts
  */
@@ -112,26 +112,26 @@ class ErrorMonitor {
           const lastEvents = this.recordEventsMatrix[this.recordEventsMatrix.length - 1];
           lastEvents.push(event);
         },
-        checkoutEveryNms: 10 * 1000, // 每 10 秒重新制作快照
+        checkoutEveryNms: 20 * 1000, // 每 20 秒重新制作快照
       });
     };
     setTimeout((): void => {
       document.head && document.head.appendChild(script);
     }, 0);
-    
   }
   /**
-   * 读取最近 20 秒的行为记录
+   * 读取最近 40 秒的行为记录
    */
-  private getRecentRecord(): string {
+  public getRecentRecord(): string {
     const len = this.recordEventsMatrix.length;
-    if(len === 0) return '';
+    // if(len === 0) return '';
     let events: any[];
     if(len >= 2) {
       events = this.recordEventsMatrix[len - 2].concat(this.recordEventsMatrix[len - 1]);
     }else {
       events = this.recordEventsMatrix[len - 1];
     }
+    // 返回值有可能是 []，因为此时录像脚本可能还没加载完成
     return JSON.stringify(events);
   }
   /**

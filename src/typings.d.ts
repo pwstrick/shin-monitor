@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 18:03:08
- * @LastEditTime: 2023-06-27 16:50:03
+ * @LastEditTime: 2023-07-03 15:22:17
  * @Description: 自定义的声明文件
  * @FilePath: /web/shin-monitor/src/typings.d.ts
  */
@@ -235,6 +235,7 @@ export interface TypeCaculateTiming {
   identity?: string;
   referer?: string;
   resource: TypeSendResource[];
+  record?: string;
 }
 // 发送的原始资源信息
 export interface TypeSendResource {

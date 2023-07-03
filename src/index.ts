@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 10:17:17
- * @LastEditTime: 2023-06-19 11:24:07
+ * @LastEditTime: 2023-07-03 15:43:06
  * @Description: 入口，自动初始化
  * @FilePath: /web/shin-monitor/src/index.ts
  */
@@ -10,7 +10,7 @@ import ErrorMonitor from './lib/error';
 import ActionMonitor from './lib/action';
 import PerformanceMonitor from './lib/performance';
 
-import { TypeShinParams } from './typings';
+import { TypeShinParams, TypeCaculateTiming } from './typings';
 /**
  * 默认属性
  */
@@ -88,7 +88,7 @@ function setParams(params: TypeShinParams): TypeShinParams {
   error.registerErrorEvent();                   // 注册 error 事件
   error.registerUnhandledrejectionEvent();      // 注册 unhandledrejection 事件
   error.registerLoadEvent();                    // 注册 load 事件
-  error.recordPage();
+  error.recordPage();                           // 是否启动录像回放
   shin.reactError = error.reactError.bind(error);   // 对外提供 React 的错误处理
   shin.vueError = error.vueError.bind(error);       // 对外提供 Vue 的错误处理
 
@@ -96,7 +96,12 @@ function setParams(params: TypeShinParams): TypeShinParams {
   const pe = new PerformanceMonitor(combination);
   pe.observerLCP();      // 监控 LCP
   pe.observerFID();      // 监控 FID
-  pe.registerLoadAndHideEvent();    // 注册 load 和页面隐藏事件
+  const setRecord = (data: TypeCaculateTiming): void => {
+    // 只对白屏时间超过 4 秒的页面进行录像存储
+    if(data.firstPaint > 4000)
+      data.record = error.getRecentRecord();
+  };
+  pe.registerLoadAndHideEvent(setRecord);    // 注册 load 和页面隐藏事件
 
   // 为原生对象注入自定义行为
   const action = new ActionMonitor(combination);

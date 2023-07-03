@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 18:18:45
- * @LastEditTime: 2023-06-21 14:18:04
+ * @LastEditTime: 2023-07-03 15:58:03
  * @Description: 性能监控
  * @FilePath: /web/shin-monitor/src/lib/performance.ts
  */
@@ -11,6 +11,8 @@ import { TypeShinParams,TypePerformanceTiming, TypeTiming, TypeLCP,
 import { removeQuote, rounded, getNowTimestamp } from '../utils';
 import FMP from './fmp';
 import Http from './http';
+
+type ParamsCallback = (data: TypeCaculateTiming) => void;
 
 class PerformanceMonitor {
   private lcp: TypeLCP;            // 最大内容可见的对象，time：时间 ms，url：参照的资源地址
@@ -386,10 +388,12 @@ class PerformanceMonitor {
   /**
    * 注册 laod 和页面隐藏事件
    */
-  public registerLoadAndHideEvent(): void {
+  public registerLoadAndHideEvent(setRecord: ParamsCallback): void {
     const send = (): void => {
       const data = this.getTimes();
       if(this.isNeedHideEvent && data) {
+        // 存储录像回放
+        setRecord && setRecord(data);
         this.http.sendPerformance(data);
         this.isNeedHideEvent = false;
       }

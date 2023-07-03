@@ -260,7 +260,7 @@ var ErrorMonitor = /** @class */ (function () {
                     var lastEvents = _this.recordEventsMatrix[_this.recordEventsMatrix.length - 1];
                     lastEvents.push(event);
                 },
-                checkoutEveryNms: 10 * 1000,
+                checkoutEveryNms: 20 * 1000,
             });
         };
         setTimeout(function () {
@@ -268,12 +268,11 @@ var ErrorMonitor = /** @class */ (function () {
         }, 0);
     };
     /**
-     * 读取最近 20 秒的行为记录
+     * 读取最近 40 秒的行为记录
      */
     ErrorMonitor.prototype.getRecentRecord = function () {
         var len = this.recordEventsMatrix.length;
-        if (len === 0)
-            return '';
+        // if(len === 0) return '';
         var events;
         if (len >= 2) {
             events = this.recordEventsMatrix[len - 2].concat(this.recordEventsMatrix[len - 1]);
@@ -281,6 +280,7 @@ var ErrorMonitor = /** @class */ (function () {
         else {
             events = this.recordEventsMatrix[len - 1];
         }
+        // 返回值有可能是 []，因为此时录像脚本可能还没加载完成
         return JSON.stringify(events);
     };
     /**
@@ -1375,11 +1375,13 @@ var PerformanceMonitor = /** @class */ (function () {
     /**
      * 注册 laod 和页面隐藏事件
      */
-    PerformanceMonitor.prototype.registerLoadAndHideEvent = function () {
+    PerformanceMonitor.prototype.registerLoadAndHideEvent = function (setRecord) {
         var _this = this;
         var send = function () {
             var data = _this.getTimes();
             if (_this.isNeedHideEvent && data) {
+                // 存储录像回放
+                setRecord && setRecord(data);
                 _this.http.sendPerformance(data);
                 _this.isNeedHideEvent = false;
             }
@@ -1411,7 +1413,7 @@ var PerformanceMonitor = /** @class */ (function () {
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 10:17:17
- * @LastEditTime: 2023-06-19 11:24:07
+ * @LastEditTime: 2023-07-03 15:43:06
  * @Description: 入口，自动初始化
  * @FilePath: /web/shin-monitor/src/index.ts
  */
@@ -1486,14 +1488,19 @@ function setParams(params) {
     error.registerErrorEvent(); // 注册 error 事件
     error.registerUnhandledrejectionEvent(); // 注册 unhandledrejection 事件
     error.registerLoadEvent(); // 注册 load 事件
-    error.recordPage();
+    error.recordPage(); // 是否启动录像回放
     shin.reactError = error.reactError.bind(error); // 对外提供 React 的错误处理
     shin.vueError = error.vueError.bind(error); // 对外提供 Vue 的错误处理
     // 启动性能监控
     var pe = new PerformanceMonitor(combination);
     pe.observerLCP(); // 监控 LCP
     pe.observerFID(); // 监控 FID
-    pe.registerLoadAndHideEvent(); // 注册 load 和页面隐藏事件
+    var setRecord = function (data) {
+        // 只对白屏时间超过 4 秒的页面进行录像存储
+        if (data.firstPaint > 4000)
+            data.record = error.getRecentRecord();
+    };
+    pe.registerLoadAndHideEvent(setRecord); // 注册 load 和页面隐藏事件
     // 为原生对象注入自定义行为
     var action = new ActionMonitor(combination);
     action.injectConsole(); // 监控打印
