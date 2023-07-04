@@ -130,6 +130,7 @@ In order to configure monitoring more flexibly, multiple parameters are provided
 * author：page maintainers, so it's easy to track who's making the mistakes
 * record：recording configuration
     * isOpen：whether to enable recording, the default is true
+    * isSendInPerformance：Whether to send the performance monitoring video to the server, default is false
     * src：rrweb address, 
         * the default is the official CDN address //cdn.jsdelivr.net/npm/rrweb@latest/dist/rrweb.min.js
 * error：wrong configuration

@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 10:17:17
- * @LastEditTime: 2023-07-03 15:43:06
+ * @LastEditTime: 2023-07-04 14:40:03
  * @Description: 入口，自动初始化
  * @FilePath: /web/shin-monitor/src/index.ts
  */
@@ -23,7 +23,8 @@ const defaults: TypeShinParams = {
   version: '',                          // 版本，便于追查出错源
   author: '',                           // 页面维护人员，便于追踪错源出自谁的手
   record: {
-    isOpen: true,                       // 是否开启录像
+    isOpen: true,                       // 是否开启录像功能
+    isSendInPerformance: false,         // 是否将性能监控的录像发送到服务器
     src: '//cdn.jsdelivr.net/npm/rrweb@latest/dist/rrweb.min.js'   // 录像地址
   },
   error: {

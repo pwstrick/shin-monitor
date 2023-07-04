@@ -1,0 +1,53 @@
+<!--
+ * @Author: strick
+ * @LastEditors: strick
+ * @Date: 2023-01-13 11:22:45
+ * @LastEditTime: 2023-06-27 16:51:25
+ * @Description: 代码异常
+ * @FilePath: /web/shin-monitor/demo/error.html
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>代码异常</title>
+    <script src="../dist/shin.umd.js"></script>
+    <script>
+      shin.setParams({
+        author: 'strick',
+        token: 'pwstrick',
+        error: {
+          // 过滤掉与业务无关或无意义的错误
+          isFilterErrorFunc: (event) => event.message === 'Script error.',
+          isFilterPromiseFunc: (desc) => desc.status == 401 || desc.url.indexOf('reports/ai/logs') >= 0,
+        }
+      });
+      shin.reactError('React错误', { componentStack: 'stack info'});
+      // Promise异常捕获
+      new Promise(() => {
+        throw e;
+      }).catch(() => {
+        const error = new Error('内部错误');
+        error.response = {
+          request: {
+            ajax: {
+              url: 'xxx'
+            }
+        }};
+        error.status = 500;
+        throw error;
+      });
+    </script>
+</head>
+<body>
+    <!--不存在的资源异常-->
+    <img src="https://example.com/image.png" />
+    <audio src="https://example.com/demo.mp3"></audio>
+    <script src="https://example.com/demo.js"></script>
+    <link href="https://example.com/demo.css" rel="stylesheet"/>
+    <script>
+      // runtime异常
+      a
+    </script>
+</body>
+</html>

@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 18:18:45
- * @LastEditTime: 2023-06-19 11:18:24
+ * @LastEditTime: 2023-07-04 14:41:07
  * @Description: 通信
  * @FilePath: /web/shin-monitor/src/lib/http.ts
  */
@@ -97,13 +97,22 @@ class Http {
     return JSON.stringify(obj);
   }
   /**
-   * 发送 64KB 以内的性能数据
+   * 发送性能数据
    */
   public sendPerformance(data: TypeCaculateTiming): void {
     // 如果传了数据就使用该数据，否则读取性能参数，并格式化为字符串
     const str = this.paramifyPerformance(data);
     const rate = randomNum(10, 1); // 选取1~10之间的整数
     if (this.params.rate >= rate && this.params.pkey) {
+      // 开启了录像得用 fetch 传输
+      if(this.params.record.isSendInPerformance) {
+        fetch(this.params.psrc, {
+          method: 'POST',
+          body: str,
+        });
+        return;
+      }
+      // 普通性能监控，就只传输 64KB 以内的数据
       navigator.sendBeacon(this.params.psrc, str);
     }
   }

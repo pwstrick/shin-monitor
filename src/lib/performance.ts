@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 18:18:45
- * @LastEditTime: 2023-07-03 15:58:03
+ * @LastEditTime: 2023-07-04 14:40:54
  * @Description: 性能监控
  * @FilePath: /web/shin-monitor/src/lib/performance.ts
  */
@@ -21,7 +21,9 @@ class PerformanceMonitor {
   private fmpObj: FMP;
   private http: Http;
   private isNeedHideEvent: boolean;     // 控制隐藏事件只触发一次
+  private params: TypeShinParams;  // 内部私有变量
   public constructor(params: TypeShinParams) {
+    this.params = params;
     this.fmpObj = new FMP();
     this.http = new Http(params);
     this.isNeedHideEvent = true;
@@ -392,8 +394,8 @@ class PerformanceMonitor {
     const send = (): void => {
       const data = this.getTimes();
       if(this.isNeedHideEvent && data) {
-        // 存储录像回放
-        setRecord && setRecord(data);
+        // 只有开启了存储录像回放，才会执行 setRecord 回调
+        this.params.record.isSendInPerformance && setRecord(data);
         this.http.sendPerformance(data);
         this.isNeedHideEvent = false;
       }

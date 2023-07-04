@@ -165,13 +165,22 @@ var Http = /** @class */ (function () {
         return JSON.stringify(obj);
     };
     /**
-     * 发送 64KB 以内的性能数据
+     * 发送性能数据
      */
     Http.prototype.sendPerformance = function (data) {
         // 如果传了数据就使用该数据，否则读取性能参数，并格式化为字符串
         var str = this.paramifyPerformance(data);
         var rate = randomNum(10, 1); // 选取1~10之间的整数
         if (this.params.rate >= rate && this.params.pkey) {
+            // 开启了录像得用 fetch 传输
+            if (this.params.record.isSendInPerformance) {
+                fetch(this.params.psrc, {
+                    method: 'POST',
+                    body: str,
+                });
+                return;
+            }
+            // 普通性能监控，就只传输 64KB 以内的数据
             navigator.sendBeacon(this.params.psrc, str);
         }
     };
@@ -1022,6 +1031,7 @@ var FMP = /** @class */ (function () {
 
 var PerformanceMonitor = /** @class */ (function () {
     function PerformanceMonitor(params) {
+        this.params = params;
         this.fmpObj = new FMP();
         this.http = new Http(params);
         this.isNeedHideEvent = true;
@@ -1380,8 +1390,8 @@ var PerformanceMonitor = /** @class */ (function () {
         var send = function () {
             var data = _this.getTimes();
             if (_this.isNeedHideEvent && data) {
-                // 存储录像回放
-                setRecord && setRecord(data);
+                // 只有开启了存储录像回放，才会执行 setRecord 回调
+                _this.params.record.isSendInPerformance && setRecord(data);
                 _this.http.sendPerformance(data);
                 _this.isNeedHideEvent = false;
             }
@@ -1413,7 +1423,7 @@ var PerformanceMonitor = /** @class */ (function () {
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 10:17:17
- * @LastEditTime: 2023-07-03 15:43:06
+ * @LastEditTime: 2023-07-04 14:40:03
  * @Description: 入口，自动初始化
  * @FilePath: /web/shin-monitor/src/index.ts
  */
@@ -1430,6 +1440,7 @@ var defaults = {
     author: '',
     record: {
         isOpen: true,
+        isSendInPerformance: false,
         src: '//cdn.jsdelivr.net/npm/rrweb@latest/dist/rrweb.min.js' // 录像地址
     },
     error: {

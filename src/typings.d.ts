@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 18:03:08
- * @LastEditTime: 2023-07-03 15:22:17
+ * @LastEditTime: 2023-07-04 14:40:50
  * @Description: 自定义的声明文件
  * @FilePath: /web/shin-monitor/src/typings.d.ts
  */
@@ -28,6 +28,7 @@ export interface TypeCrashPrams {
 // 录像参数
 export interface TypeRecord {
   isOpen: boolean;
+  isSendInPerformance: boolean;
   src: string;
 }
 // 错误参数

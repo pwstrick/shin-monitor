@@ -123,6 +123,7 @@ shin.setParams({
 * author：页面维护人员，便于追踪错源出自谁的手
 * record：录像配置
     * isOpen：是否开启录像，默认是 true
+    * isSendInPerformance：是否将性能监控的录像发送到服务器，默认是 false
     * src：rrweb 地址，默认是官方提供的 CDN 地址 //cdn.jsdelivr.net/npm/rrweb@latest/dist/rrweb.min.js
 * error：错误配置
     * isFilterErrorFunc：需要过滤的脚本错误，默认是 null，可设置一个函数，参考 demo/error.html
