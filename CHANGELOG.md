@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 10:17:17
- * @LastEditTime: 2023-07-03 12:01:35
+ * @LastEditTime: 2023-07-04 15:58:02
  * @Description: 变更日志
  * @FilePath: /web/shin-monitor/CHANGELOG.md
 -->
@@ -75,3 +75,6 @@
 
 ## 1.3.1（2023-07-03）
 * 修正打印 new Error() 时只能字符串序列化成 {} 的问题
+
+## 1.4.0（2023-07-04）
+* 增加在性能监控时发送录像到服务器的开关
