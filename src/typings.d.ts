@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 18:03:08
- * @LastEditTime: 2023-07-04 14:40:50
+ * @LastEditTime: 2023-07-05 16:29:42
  * @Description: 自定义的声明文件
  * @FilePath: /web/shin-monitor/src/typings.d.ts
  */
@@ -28,7 +28,7 @@ export interface TypeCrashPrams {
 // 录像参数
 export interface TypeRecord {
   isOpen: boolean;
-  isSendInPerformance: boolean;
+  isSendInPerformance?: boolean;
   src: string;
 }
 // 错误参数
@@ -237,6 +237,14 @@ export interface TypeCaculateTiming {
   referer?: string;
   resource: TypeSendResource[];
   record?: string;
+}
+// 用户行为信息
+export interface TypeBehavior {
+  token?: string;
+  pkey?: string;
+  identity?: string;
+  referer?: string;
+  duration?: number;
 }
 // 发送的原始资源信息
 export interface TypeSendResource {

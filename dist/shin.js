@@ -186,6 +186,22 @@ var Http = /** @class */ (function () {
             navigator.sendBeacon(this.params.psrc, str);
         }
     };
+    /**
+     * 组装性能变量
+     */
+    Http.prototype.paramifyBehavior = function (obj) {
+        obj.pkey = this.params.pkey;
+        obj.identity = this.getIdentity();
+        obj.referer = location.href; // 来源地址
+        return JSON.stringify(obj);
+    };
+    /**
+     * 发送用户行为数据
+     */
+    Http.prototype.sendBehavior = function (data) {
+        var str = this.paramifyBehavior(data);
+        navigator.sendBeacon(this.params.psrc, str);
+    };
     return Http;
 }());
 
@@ -1047,6 +1063,7 @@ var PerformanceMonitor = /** @class */ (function () {
             element: ''
         };
         this.fid = 0;
+        this.beginStayTime = getNowTimestamp();
     }
     /**
      * 从 performance.timing 读取的性能参数，有些值是 0
@@ -1389,7 +1406,8 @@ var PerformanceMonitor = /** @class */ (function () {
      */
     PerformanceMonitor.prototype.registerLoadAndHideEvent = function (setRecord) {
         var _this = this;
-        var send = function () {
+        // 发送性能数据
+        var sendPerformance = function () {
             var data = _this.getTimes();
             if (_this.isNeedHideEvent && data) {
                 // 只有开启了存储录像回放，才会执行 setRecord 回调
@@ -1398,6 +1416,12 @@ var PerformanceMonitor = /** @class */ (function () {
                 _this.isNeedHideEvent = false;
             }
         };
+        // 发送用户行为数据
+        var sendBehavior = function () {
+            var behavior = {};
+            behavior.duration = rounded(getNowTimestamp() - _this.beginStayTime); // 页面停留时长
+            _this.http.sendBehavior(behavior);
+        };
         /**
          * 在 load 事件中，上报性能参数
          * 该事件不可取消，也不会冒泡
@@ -1405,7 +1429,7 @@ var PerformanceMonitor = /** @class */ (function () {
         window.addEventListener('load', function () {
             // 加定时器是避免在上报性能参数时，loadEventEnd 为 0，因为事件还没执行完毕
             setTimeout(function () {
-                send();
+                sendPerformance();
             }, 0);
         });
         /**
@@ -1415,7 +1439,8 @@ var PerformanceMonitor = /** @class */ (function () {
         var isIOS = !!navigator.userAgent.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
         var eventName = isIOS ? 'pagehide' : 'beforeunload';
         window.addEventListener(eventName, function () {
-            send();
+            sendPerformance();
+            sendBehavior();
         }, false);
     };
     return PerformanceMonitor;

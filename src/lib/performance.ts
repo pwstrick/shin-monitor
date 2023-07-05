@@ -2,12 +2,12 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 18:18:45
- * @LastEditTime: 2023-07-04 14:40:54
+ * @LastEditTime: 2023-07-05 17:51:01
  * @Description: 性能监控
  * @FilePath: /web/shin-monitor/src/lib/performance.ts
  */
 import { TypeShinParams,TypePerformanceTiming, TypeTiming, TypeLCP,
-  TypePerformanceEntry, TypeCaculateTiming, TypeFMP, TypeDOMCount } from '../typings';
+  TypePerformanceEntry, TypeCaculateTiming, TypeFMP, TypeDOMCount, TypeBehavior } from '../typings';
 import { removeQuote, rounded, getNowTimestamp } from '../utils';
 import FMP from './fmp';
 import Http from './http';
@@ -21,7 +21,8 @@ class PerformanceMonitor {
   private fmpObj: FMP;
   private http: Http;
   private isNeedHideEvent: boolean;     // 控制隐藏事件只触发一次
-  private params: TypeShinParams;  // 内部私有变量
+  private params: TypeShinParams;       // 内部私有变量
+  private beginStayTime: number;        // 进入页面的时间
   public constructor(params: TypeShinParams) {
     this.params = params;
     this.fmpObj = new FMP();
@@ -37,6 +38,7 @@ class PerformanceMonitor {
       element: ''
     };
     this.fid = 0;
+    this.beginStayTime = getNowTimestamp();
   }
   /**
    * 从 performance.timing 读取的性能参数，有些值是 0
@@ -391,7 +393,8 @@ class PerformanceMonitor {
    * 注册 laod 和页面隐藏事件
    */
   public registerLoadAndHideEvent(setRecord: ParamsCallback): void {
-    const send = (): void => {
+    // 发送性能数据
+    const sendPerformance = (): void => {
       const data = this.getTimes();
       if(this.isNeedHideEvent && data) {
         // 只有开启了存储录像回放，才会执行 setRecord 回调
@@ -400,6 +403,12 @@ class PerformanceMonitor {
         this.isNeedHideEvent = false;
       }
     };
+    // 发送用户行为数据
+    const sendBehavior = (): void => {
+      const behavior: TypeBehavior = {};
+      behavior.duration = rounded(getNowTimestamp() - this.beginStayTime);   // 页面停留时长
+      this.http.sendBehavior(behavior);
+    };
     /**
      * 在 load 事件中，上报性能参数
      * 该事件不可取消，也不会冒泡
@@ -407,7 +416,7 @@ class PerformanceMonitor {
     window.addEventListener('load', (): void => {
       // 加定时器是避免在上报性能参数时，loadEventEnd 为 0，因为事件还没执行完毕
       setTimeout((): void => {
-        send();
+        sendPerformance();
       }, 0);
     });
     /**
@@ -417,7 +426,8 @@ class PerformanceMonitor {
     const isIOS = !!navigator.userAgent.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
     const eventName = isIOS ? 'pagehide' : 'beforeunload';
     window.addEventListener(eventName, (): void => {
-      send();
+      sendPerformance();
+      sendBehavior();
     }, false);
   }
 }

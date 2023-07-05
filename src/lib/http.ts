@@ -2,12 +2,12 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 18:18:45
- * @LastEditTime: 2023-07-04 14:41:07
+ * @LastEditTime: 2023-07-05 17:13:35
  * @Description: 通信
  * @FilePath: /web/shin-monitor/src/lib/http.ts
  */
 import { TypeShinParams, TypeSendBody, TypeSendParams, 
-  TypeSendResource, TypeCaculateTiming } from '../typings';
+  TypeSendResource, TypeCaculateTiming, TypeBehavior } from '../typings';
 import { rounded, randomNum } from '../utils';
 
 type ParamsCallback = (data: TypeSendParams, body: TypeSendBody) => void;
@@ -115,6 +115,22 @@ class Http {
       // 普通性能监控，就只传输 64KB 以内的数据
       navigator.sendBeacon(this.params.psrc, str);
     }
+  }
+  /**
+   * 组装性能变量
+   */
+  private paramifyBehavior(obj: TypeBehavior): string {
+    obj.pkey = this.params.pkey;
+    obj.identity = this.getIdentity();
+    obj.referer = location.href; // 来源地址
+    return JSON.stringify(obj);
+  }
+  /**
+   * 发送用户行为数据
+   */
+  public sendBehavior(data: TypeBehavior): void {
+    const str = this.paramifyBehavior(data);
+    navigator.sendBeacon(this.params.psrc, str);
   }
 }
 export default Http;
