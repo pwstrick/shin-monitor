@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 10:17:17
- * @LastEditTime: 2023-07-04 15:58:02
+ * @LastEditTime: 2023-07-05 18:26:43
  * @Description: 变更日志
  * @FilePath: /web/shin-monitor/CHANGELOG.md
 -->
@@ -78,3 +78,6 @@
 
 ## 1.4.0（2023-07-04）
 * 增加在性能监控时发送录像到服务器的开关
+
+## 1.4.1（2023-07-05）
+* 性能监控增加停留时长
