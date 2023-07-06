@@ -199,7 +199,7 @@ var Http = /** @class */ (function () {
      */
     Http.prototype.sendBehavior = function (data) {
         // 避免不必要的请求，只有当性能参数发送后，才可以将相应的行为数据发送到服务器中
-        if (this.rate && this.params.rate >= this.rate) {
+        if (this.rate && this.params.rate >= this.rate && this.params.pkey) {
             var str = this.paramifyBehavior(data);
             navigator.sendBeacon(this.params.psrc, str);
         }

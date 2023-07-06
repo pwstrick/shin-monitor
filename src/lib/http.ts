@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 18:18:45
- * @LastEditTime: 2023-07-06 11:05:19
+ * @LastEditTime: 2023-07-06 16:22:07
  * @Description: 通信
  * @FilePath: /web/shin-monitor/src/lib/http.ts
  */
@@ -132,7 +132,7 @@ class Http {
    */
   public sendBehavior(data: TypeBehavior): void {
     // 避免不必要的请求，只有当性能参数发送后，才可以将相应的行为数据发送到服务器中
-    if(this.rate && this.params.rate >= this.rate) {
+    if(this.rate && this.params.rate >= this.rate && this.params.pkey) {
       const str = this.paramifyBehavior(data);
       navigator.sendBeacon(this.params.psrc, str);
     }
