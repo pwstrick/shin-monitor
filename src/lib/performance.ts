@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 18:18:45
- * @LastEditTime: 2023-07-05 17:51:01
+ * @LastEditTime: 2023-07-06 18:29:30
  * @Description: 性能监控
  * @FilePath: /web/shin-monitor/src/lib/performance.ts
  */
@@ -250,8 +250,12 @@ class PerformanceMonitor {
     if (paint && timing.entryType && paint[0]) {
       api.firstPaint = paint[0].startTime - timing.fetchStart;
       api.firstPaintStart = paint[0].startTime;   // 记录白屏时间点
-    } else {
-      api.firstPaint = timing.responseEnd - timing.fetchStart;
+    }
+    // 如果白屏时间是 0 或不存在，则还需要计算
+    if(!api.firstPaint || api.firstPaint === 0) {
+      // 临时变量，选择白屏的结束时间，若 responseEnd 是 0，则用进入页面的时间
+      const fpEnd = timing.responseEnd === 0 ? this.beginStayTime : timing.responseEnd;
+      api.firstPaint = fpEnd - timing.fetchStart;
     }
 
     /**

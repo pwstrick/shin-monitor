@@ -1280,8 +1280,11 @@ var PerformanceMonitor = /** @class */ (function () {
             api.firstPaint = paint[0].startTime - timing.fetchStart;
             api.firstPaintStart = paint[0].startTime; // 记录白屏时间点
         }
-        else {
-            api.firstPaint = timing.responseEnd - timing.fetchStart;
+        // 如果白屏时间是 0 或不存在，则还需要计算
+        if (!api.firstPaint || api.firstPaint === 0) {
+            // 临时变量，选择白屏的结束时间，若 responseEnd 是 0，则用进入页面的时间
+            var fpEnd = timing.responseEnd === 0 ? this.beginStayTime : timing.responseEnd;
+            api.firstPaint = fpEnd - timing.fetchStart;
         }
         /**
          * FCP（First Contentful Paint）首次有实际内容渲染的时间
