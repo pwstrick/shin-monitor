@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 10:17:17
- * @LastEditTime: 2023-07-06 17:43:51
+ * @LastEditTime: 2023-07-06 18:56:24
  * @Description: 变更日志
  * @FilePath: /web/shin-monitor/CHANGELOG.md
 -->
@@ -87,3 +87,6 @@
 
 ## 1.4.3（2023-07-06）
 * 未开启性能监控的页面不传输行为数据
+
+## 1.4.4（2023-07-06）
+* 对白屏时间为 0 的情况进行适配
