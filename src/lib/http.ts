@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 18:18:45
- * @LastEditTime: 2023-07-05 17:13:35
+ * @LastEditTime: 2023-07-06 11:05:19
  * @Description: 通信
  * @FilePath: /web/shin-monitor/src/lib/http.ts
  */
@@ -13,7 +13,8 @@ import { rounded, randomNum } from '../utils';
 type ParamsCallback = (data: TypeSendParams, body: TypeSendBody) => void;
 
 class Http {
-  private params: TypeShinParams;  // 内部私有变量
+  private params: TypeShinParams;   // 内部私有变量
+  private rate: number;             // 采样数
   public constructor(params: TypeShinParams) {
     this.params = params;
   }
@@ -102,8 +103,9 @@ class Http {
   public sendPerformance(data: TypeCaculateTiming): void {
     // 如果传了数据就使用该数据，否则读取性能参数，并格式化为字符串
     const str = this.paramifyPerformance(data);
-    const rate = randomNum(10, 1); // 选取1~10之间的整数
-    if (this.params.rate >= rate && this.params.pkey) {
+    this.rate = randomNum(10, 1); // 选取1~10之间的整数
+    // 命中采样
+    if (this.params.rate >= this.rate && this.params.pkey) {
       // 开启了录像得用 fetch 传输
       if(this.params.record.isSendInPerformance) {
         fetch(this.params.psrc, {
@@ -129,8 +131,11 @@ class Http {
    * 发送用户行为数据
    */
   public sendBehavior(data: TypeBehavior): void {
-    const str = this.paramifyBehavior(data);
-    navigator.sendBeacon(this.params.psrc, str);
+    // 避免不必要的请求，只有当性能参数发送后，才可以将相应的行为数据发送到服务器中
+    if(this.rate && this.params.rate >= this.rate) {
+      const str = this.paramifyBehavior(data);
+      navigator.sendBeacon(this.params.psrc, str);
+    }
   }
 }
 export default Http;
