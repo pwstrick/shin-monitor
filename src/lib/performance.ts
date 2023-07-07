@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 18:18:45
- * @LastEditTime: 2023-07-06 18:29:30
+ * @LastEditTime: 2023-07-07 14:33:43
  * @Description: 性能监控
  * @FilePath: /web/shin-monitor/src/lib/performance.ts
  */
@@ -247,6 +247,7 @@ class PerformanceMonitor {
      * FP（First Paint）首次渲染的时间
      */
     const paint = performance.getEntriesByType('paint');
+    // entryType 是为了区分新旧两个版本的性能对象，只有新版本才有此属性
     if (paint && timing.entryType && paint[0]) {
       api.firstPaint = paint[0].startTime - timing.fetchStart;
       api.firstPaintStart = paint[0].startTime;   // 记录白屏时间点
