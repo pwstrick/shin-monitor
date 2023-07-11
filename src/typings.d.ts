@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 18:03:08
- * @LastEditTime: 2023-07-05 16:29:42
+ * @LastEditTime: 2023-07-10 16:52:47
  * @Description: 自定义的声明文件
  * @FilePath: /web/shin-monitor/src/typings.d.ts
  */
@@ -156,6 +156,7 @@ export interface TypeSendParams {
   identity?: string;
   referer?: string;
   author?: string;
+  fingerprint?: string;
   data: TypeErrorData | TypeAjaxData;
 }
 /*************************************************************************

@@ -2,13 +2,13 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 18:18:45
- * @LastEditTime: 2023-07-06 16:22:07
+ * @LastEditTime: 2023-07-10 16:52:33
  * @Description: 通信
  * @FilePath: /web/shin-monitor/src/lib/http.ts
  */
 import { TypeShinParams, TypeSendBody, TypeSendParams, 
   TypeSendResource, TypeCaculateTiming, TypeBehavior } from '../typings';
-import { rounded, randomNum } from '../utils';
+import { rounded, randomNum, bin2hex } from '../utils';
 
 type ParamsCallback = (data: TypeSendParams, body: TypeSendBody) => void;
 
@@ -36,6 +36,35 @@ class Http {
     return identity;
   }
   /**
+   * Canvas 指纹
+   * 注意，同型号的手机，其 Canvas 指纹是相同的
+   */
+  private getFingerprint(): string {
+    const key = 'shin-monitor-fingerprint';
+    const fingerprint = localStorage.getItem(key);
+    if(fingerprint) return fingerprint;
+    // 绘制 Canvas
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    const txt = 'fingerprint';
+    ctx.textBaseline = 'top';
+    ctx.font = '16px Arial';
+    ctx.fillStyle = '#F60';
+    ctx.fillRect(125, 1, 62, 20);
+    ctx.fillStyle = '#069';
+    ctx.fillText(txt, 2, 15);
+    ctx.fillStyle = 'rgba(102, 204, 0, 0.7)';
+    ctx.fillText(txt, 4, 17);
+    var b64 = canvas.toDataURL().replace('data:image/png;base64,', '');
+    // window.atob 用于解码使用 base64 编码的字符串
+    const bin = window.atob(b64);
+    // 必须调用 slice() 否则无法转换
+    const result = bin2hex(bin.slice(-16, -12));
+    // 缓存到本地
+    localStorage.setItem(key, result);
+    return result;
+  }
+  /**
    * 组装监控变量
    * https://github.com/appsignal/appsignal-frontend-monitoring
    */
@@ -44,6 +73,7 @@ class Http {
     obj.token = this.params.token;
     obj.subdir = this.params.subdir;
     obj.identity = this.getIdentity();
+    obj.fingerprint = this.getFingerprint();
     obj.referer = location.href;  // 来源地址，即当前页面地址
     // return encodeURIComponent(JSON.stringify(obj));
     return JSON.stringify(obj);

@@ -11,7 +11,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 11:19:52
- * @LastEditTime: 2023-01-14 18:57:32
+ * @LastEditTime: 2023-07-10 16:45:21
  * @Description: 工具函数，与业务解耦
  * @FilePath: /web/shin-monitor/src/utils.ts
  */
@@ -80,6 +80,18 @@ function removeQuote(html) {
 function getNowTimestamp() {
     return performance.now();
 }
+/**
+ * ASCII字符串转换成十六进制
+ */
+function bin2hex(s) {
+    var o = '';
+    s += '';
+    for (var i = 0, l = s.length; i < l; i++) {
+        var n = s.charCodeAt(i).toString(16);
+        o += n.length < 2 ? '0' + n : n;
+    }
+    return o;
+}
 
 var Http = /** @class */ (function () {
     function Http(params) {
@@ -103,6 +115,36 @@ var Http = /** @class */ (function () {
         return identity;
     };
     /**
+     * Canvas 指纹
+     * 注意，同型号的手机，其 Canvas 指纹是相同的
+     */
+    Http.prototype.getFingerprint = function () {
+        var key = 'shin-monitor-fingerprint';
+        var fingerprint = localStorage.getItem(key);
+        if (fingerprint)
+            return fingerprint;
+        // 绘制 Canvas
+        var canvas = document.createElement('canvas');
+        var ctx = canvas.getContext('2d');
+        var txt = 'fingerprint';
+        ctx.textBaseline = 'top';
+        ctx.font = '16px Arial';
+        ctx.fillStyle = '#F60';
+        ctx.fillRect(125, 1, 62, 20);
+        ctx.fillStyle = '#069';
+        ctx.fillText(txt, 2, 15);
+        ctx.fillStyle = 'rgba(102, 204, 0, 0.7)';
+        ctx.fillText(txt, 4, 17);
+        var b64 = canvas.toDataURL().replace('data:image/png;base64,', '');
+        // window.atob 用于解码使用 base64 编码的字符串
+        var bin = window.atob(b64);
+        // 必须调用 slice() 否则无法转换
+        var result = bin2hex(bin.slice(-16, -12));
+        // 缓存到本地
+        localStorage.setItem(key, result);
+        return result;
+    };
+    /**
      * 组装监控变量
      * https://github.com/appsignal/appsignal-frontend-monitoring
      */
@@ -111,6 +153,7 @@ var Http = /** @class */ (function () {
         obj.token = this.params.token;
         obj.subdir = this.params.subdir;
         obj.identity = this.getIdentity();
+        obj.fingerprint = this.getFingerprint();
         obj.referer = location.href; // 来源地址，即当前页面地址
         // return encodeURIComponent(JSON.stringify(obj));
         return JSON.stringify(obj);
@@ -1276,6 +1319,7 @@ var PerformanceMonitor = /** @class */ (function () {
          * FP（First Paint）首次渲染的时间
          */
         var paint = performance.getEntriesByType('paint');
+        // entryType 是为了区分新旧两个版本的性能对象，只有新版本才有此属性
         if (paint && timing.entryType && paint[0]) {
             api.firstPaint = paint[0].startTime - timing.fetchStart;
             api.firstPaintStart = paint[0].startTime; // 记录白屏时间点

@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 11:19:52
- * @LastEditTime: 2023-01-14 18:57:32
+ * @LastEditTime: 2023-07-10 16:45:21
  * @Description: 工具函数，与业务解耦
  * @FilePath: /web/shin-monitor/src/utils.ts
  */
@@ -76,4 +76,17 @@ export function removeQuote(html: string): string {
  */
 export function getNowTimestamp(): number {
   return performance.now();
+}
+
+/**
+ * ASCII字符串转换成十六进制
+ */
+export function bin2hex(s: string): string {
+  let o = '';
+  s += '';
+  for (let i = 0, l = s.length; i < l; i++) {
+    const n = s.charCodeAt(i).toString(16);
+    o += n.length < 2 ? '0' + n : n;
+  }
+  return o;
 }
