@@ -531,12 +531,14 @@ var ErrorMonitor = /** @class */ (function () {
      * https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Error
      */
     ErrorMonitor.prototype.formatRuntimerError = function (message, filename, lineno, colno) {
+        // 需要将 message 中的双引号替换成单引号，便于数据库搜索，不然很有可能因为反斜杠影响查询结果
+        var m = message.replace(/"/g, '\'');
         return {
             type: CONSTANT.ERROR_RUNTIME,
             lineno: lineno,
             colno: colno,
             desc: {
-                prompt: (message + ' at ' + filename + ':' + lineno + ':' + colno),
+                prompt: (m + ' at ' + filename + ':' + lineno + ':' + colno),
                 url: location.href
             },
         };

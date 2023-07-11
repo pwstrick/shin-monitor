@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 14:21:36
- * @LastEditTime: 2023-07-03 18:00:53
+ * @LastEditTime: 2023-07-11 14:59:25
  * @Description: 监控各类错误
  * @FilePath: /web/shin-monitor/src/lib/error.ts
  */
@@ -303,12 +303,14 @@ class ErrorMonitor {
    * https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Error
    */
   private formatRuntimerError(message: string, filename: string, lineno: number, colno: number): TypeErrorData {
+    // 需要将 message 中的双引号替换成单引号，便于数据库搜索，不然很有可能因为反斜杠影响查询结果
+    const m = message.replace(/"/g, '\'');
     return {
       type: CONSTANT.ERROR_RUNTIME,
       lineno,
       colno,
       desc: {
-        prompt: (message + ' at ' + filename + ':' + lineno + ':' + colno),
+        prompt: (m + ' at ' + filename + ':' + lineno + ':' + colno),
         url: location.href
       },
       // stack: error && (error.stack ? error.stack : "no stack") // IE <9, has no error stack
