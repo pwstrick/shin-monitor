@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 10:17:17
- * @LastEditTime: 2023-07-06 18:56:24
+ * @LastEditTime: 2023-07-11 15:09:11
  * @Description: 变更日志
  * @FilePath: /web/shin-monitor/CHANGELOG.md
 -->
@@ -90,3 +90,7 @@
 
 ## 1.4.4（2023-07-06）
 * 对白屏时间为 0 的情况进行适配
+
+## 1.5.0（2023-07-11）
+* 增加 Canvas 指纹
+* 将错误信息中的双引号替换成单引号
