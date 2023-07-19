@@ -618,7 +618,8 @@
        */
       ActionMonitor.prototype.handleNumber = function (obj) {
           var type = typeof obj;
-          if (type === 'object' && type !== null) {
+          // 若 obj 是 null，则 typeof null 也是 object
+          if (type === 'object' && obj !== null) {
               for (var key in obj) {
                   // 当key是只读属性时，就不能直接赋值了
                   obj[key] = this.handleNumber(obj[key]);
@@ -921,7 +922,7 @@
    * @Author: strick
    * @LastEditors: strick
    * @Date: 2023-01-12 10:17:17
-   * @LastEditTime: 2023-01-25 13:52:50
+   * @LastEditTime: 2023-07-19 16:02:24
    * @Description: FMP的计算
    * @FilePath: /web/shin-monitor/src/lib/fmp.ts
    */
@@ -1079,10 +1080,10 @@
                           break;
                       var src = void 0;
                       // 判断是否包含协议
-                      if (match && match[1]) {
+                      if (match[1]) {
                           src = match[1];
                       }
-                      if (src.indexOf('http') == -1) {
+                      if (src && src.indexOf('http') == -1) {
                           src = location.protocol + match[1];
                       }
                       ts = resources[src];
@@ -1331,7 +1332,7 @@
               api.firstPaintStart = paint[0].startTime; // 记录白屏时间点
           }
           // 如果白屏时间是 0 或不存在，则还需要计算
-          if (!api.firstPaint || api.firstPaint === 0) {
+          if (!api.firstPaint) {
               // 临时变量，选择白屏的结束时间，若 responseEnd 是 0，则用进入页面的时间
               var fpEnd = timing.responseEnd === 0 ? this.beginStayTime : timing.responseEnd;
               api.firstPaint = fpEnd - timing.fetchStart;

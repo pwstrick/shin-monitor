@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 14:24:20
- * @LastEditTime: 2023-07-03 11:20:14
+ * @LastEditTime: 2023-07-19 16:01:11
  * @Description: 用户行为监控
  * @FilePath: /web/shin-monitor/src/lib/action.ts
  */
@@ -27,7 +27,8 @@ class ActionMonitor {
    */
   private handleNumber(obj: any): any {
     const type = typeof obj;
-    if (type === 'object' && type !== null) {
+    // 若 obj 是 null，则 typeof null 也是 object
+    if (type === 'object' && obj !== null) {
       for (const key in obj) {
         // 当key是只读属性时，就不能直接赋值了
         obj[key] = this.handleNumber(obj[key]);

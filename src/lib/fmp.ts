@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 10:17:17
- * @LastEditTime: 2023-01-25 13:52:50
+ * @LastEditTime: 2023-07-19 16:02:24
  * @Description: FMP的计算
  * @FilePath: /web/shin-monitor/src/lib/fmp.ts
  */
@@ -170,10 +170,10 @@ class FMP {
           if(!match) break;
           let src: string;
           // 判断是否包含协议
-          if (match && match[1]) {
+          if (match[1]) {
             src = match[1];
           }
-          if (src.indexOf('http') == -1) {
+          if (src && src.indexOf('http') == -1) {
             src = location.protocol + match[1];
           }
           ts = resources[src];
