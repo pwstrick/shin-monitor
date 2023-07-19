@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 10:17:17
- * @LastEditTime: 2023-07-11 15:09:11
+ * @LastEditTime: 2023-07-19 16:10:16
  * @Description: 变更日志
  * @FilePath: /web/shin-monitor/CHANGELOG.md
 -->
@@ -94,3 +94,6 @@
 ## 1.5.0（2023-07-11）
 * 增加 Canvas 指纹
 * 将错误信息中的双引号替换成单引号
+
+## 1.5.1（2023-07-19）
+* 修正部分错误或冗余逻辑
