@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 10:17:17
- * @LastEditTime: 2023-07-19 16:10:16
+ * @LastEditTime: 2023-11-06 17:10:06
  * @Description: 变更日志
  * @FilePath: /web/shin-monitor/CHANGELOG.md
 -->
@@ -97,3 +97,6 @@
 
 ## 1.5.1（2023-07-19）
 * 修正部分错误或冗余逻辑
+
+## 1.5.2（2023-11-06）
+* 对 rrweb 变量增加空值判断
