@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 10:17:17
- * @LastEditTime: 2023-11-06 17:10:06
+ * @LastEditTime: 2023-11-09 15:06:56
  * @Description: 变更日志
  * @FilePath: /web/shin-monitor/CHANGELOG.md
 -->
@@ -100,3 +100,6 @@
 
 ## 1.5.2（2023-11-06）
 * 对 rrweb 变量增加空值判断
+
+## 1.5.3（2023-11-09）
+* 修复 Refused to get unsafe header "req-id"

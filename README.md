@@ -1,4 +1,4 @@
-# [shin-monitor](https://github.com/pwstrick/shin-monitor) [![license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/pwstrick/shin-monitor/blob/master/LICENSE) [![npm](https://img.shields.io/badge/npm-1.5.2-orange.svg)](https://www.npmjs.com/package/shin-monitor)
+# [shin-monitor](https://github.com/pwstrick/shin-monitor) [![license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/pwstrick/shin-monitor/blob/master/LICENSE) [![npm](https://img.shields.io/badge/npm-1.5.3-orange.svg)](https://www.npmjs.com/package/shin-monitor)
 
 English | [简体中文](./README.zh-CN.md)
 
@@ -26,7 +26,7 @@ Or use the CDN provided by [unpkg](https://www.unpkg.com/), shin-monitor is foll
 
 If you do not fill in the version number, it will automatically do a 302 jump and jump to the latest version.
 ```html
-<script src="https://unpkg.com/shin-monitor@1.5.2/dist/shin.umd.js"></script>
+<script src="https://unpkg.com/shin-monitor@1.5.3/dist/shin.umd.js"></script>
 ```
 
 ## :open_file_folder: Directory
