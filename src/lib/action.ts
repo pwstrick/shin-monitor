@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 14:24:20
- * @LastEditTime: 2023-07-19 16:01:11
+ * @LastEditTime: 2023-11-09 14:53:27
  * @Description: 用户行为监控
  * @FilePath: /web/shin-monitor/src/lib/action.ts
  */
@@ -233,7 +233,10 @@ class ActionMonitor {
             req.ajax.endBytes = 0;
           }
           // 为监控的响应头添加 req-id 字段，为了与云端的接口日志进行关联
-          const reqId = req.getResponseHeader('req-id');
+          let reqId: string|undefined;
+          // 避免出现 Refused to get unsafe header "req-id" 的错误
+          if(req.getAllResponseHeaders().indexOf('req-id') >= 0)
+            reqId = req.getResponseHeader('req-id');
           if(reqId) {
             req.ajax.header ? (req.ajax.header['req-id'] = reqId) : (req.ajax.header = { 'req-id':reqId });
           }
