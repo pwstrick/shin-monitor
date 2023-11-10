@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 14:21:36
- * @LastEditTime: 2023-11-06 17:04:19
+ * @LastEditTime: 2023-11-10 14:06:38
  * @Description: 监控各类错误
  * @FilePath: /web/shin-monitor/src/lib/error.ts
  */
@@ -100,7 +100,7 @@ class ErrorMonitor {
     script.src = src;
     // 开始监控页面行为
     script.onload = (): void => {
-      rrweb && rrweb.record({
+      (window as any).rrweb && rrweb.record({
         emit: (event: any, isCheckout: boolean): void => {
           // isCheckout 是一个标识，告诉你重新制作了快照
           if (isCheckout) {

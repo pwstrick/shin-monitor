@@ -326,7 +326,7 @@
           script.src = src;
           // 开始监控页面行为
           script.onload = function () {
-              rrweb && rrweb.record({
+              window.rrweb && rrweb.record({
                   emit: function (event, isCheckout) {
                       // isCheckout 是一个标识，告诉你重新制作了快照
                       if (isCheckout) {
