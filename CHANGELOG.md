@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 10:17:17
- * @LastEditTime: 2023-11-09 15:06:56
+ * @LastEditTime: 2023-11-10 14:12:12
  * @Description: 变更日志
  * @FilePath: /web/shin-monitor/CHANGELOG.md
 -->
@@ -103,3 +103,6 @@
 
 ## 1.5.3（2023-11-09）
 * 修复 Refused to get unsafe header "req-id"
+
+## 1.5.4（2023-11-10）
+* window.rrweb 替换 rrweb
