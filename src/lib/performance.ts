@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 18:18:45
- * @LastEditTime: 2023-07-19 16:03:13
+ * @LastEditTime: 2023-11-27 18:41:20
  * @Description: 性能监控
  * @FilePath: /web/shin-monitor/src/lib/performance.ts
  */
@@ -95,7 +95,7 @@ class PerformanceMonitor {
     return true;
   }
   /**
-   * 浏览器 LCP 计算
+   * 浏览器 LCP 计算（iOS 不支持）
    * LCP（Largest Contentful Paint）最大内容在可视区域内变得可见的时间
    * https://developer.mozilla.org/en-US/docs/Web/API/LargestContentfulPaint
    */
