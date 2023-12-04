@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 18:18:45
- * @LastEditTime: 2023-12-04 16:26:25
+ * @LastEditTime: 2023-12-04 16:30:59
  * @Description: 通信
  * @FilePath: /web/shin-monitor/src/lib/http.ts
  */
@@ -117,7 +117,6 @@ class Http {
     const resources = performance.getEntriesByType('resource');
     const newResources: TypeSendResource[] = [];
     let transferScreenSize = 0;
-    console.log(obj);
     resources && resources.forEach((value: PerformanceResourceTiming): void => {
       const { name, initiatorType, startTime, duration,transferSize } = value;
       // 过滤 fetch 请求
