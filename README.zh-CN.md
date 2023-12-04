@@ -21,7 +21,7 @@ npm install shin-monitor
 
 若不填版本号会自动做 302 跳转，跳转至最新版本。
 ```html
-<script src="https://unpkg.com/shin-monitor@1.5.4/dist/shin.umd.js"></script>
+<script src="https://unpkg.com/shin-monitor@1.6.0/dist/shin.umd.js"></script>
 ```
 
 ## :open_file_folder: 目录介绍

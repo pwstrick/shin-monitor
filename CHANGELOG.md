@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 10:17:17
- * @LastEditTime: 2023-11-10 14:12:12
+ * @LastEditTime: 2023-12-04 16:48:16
  * @Description: 变更日志
  * @FilePath: /web/shin-monitor/CHANGELOG.md
 -->
@@ -106,3 +106,6 @@
 
 ## 1.5.4（2023-11-10）
 * window.rrweb 替换 rrweb
+
+## 1.6.0（2023-12-04）
+* 计算首屏之前的资源总大小

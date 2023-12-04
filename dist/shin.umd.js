@@ -1,5 +1,5 @@
 /*!
- * shin-monitor 1.5.4 (https://github.com/pwstrick/shin-monitor)
+ * shin-monitor 1.6.0 (https://github.com/pwstrick/shin-monitor)
  * API https://github.com/pwstrick/shin-monitor/blob/master/doc/api.md
  * Copyright 2017-2023 pwstrick. All Rights Reserved
  * Licensed under MIT (https://github.com/pwstrick/shin-monitor/blob/master/LICENSE)
@@ -201,7 +201,6 @@
           var resources = performance.getEntriesByType('resource');
           var newResources = [];
           var transferScreenSize = 0;
-          console.log(obj);
           resources && resources.forEach(function (value) {
               var name = value.name, initiatorType = value.initiatorType, startTime = value.startTime, duration = value.duration, transferSize = value.transferSize;
               // 过滤 fetch 请求
