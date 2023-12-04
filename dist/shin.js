@@ -196,8 +196,8 @@ var Http = /** @class */ (function () {
          */
         var resources = performance.getEntriesByType('resource');
         var newResources = [];
-        var transferPaintSize = 0;
         var transferScreenSize = 0;
+        console.log(obj);
         resources && resources.forEach(function (value) {
             var name = value.name, initiatorType = value.initiatorType, startTime = value.startTime, duration = value.duration, transferSize = value.transferSize;
             // 过滤 fetch 请求
@@ -212,16 +212,13 @@ var Http = /** @class */ (function () {
                 startTime: rounded(startTime),
                 transferSize: transferSize // 资源的总大小，包括HTTP首部
             });
-            // 存储白屏之前请求的资源总大小
-            if (startTime <= obj.firstPaint) {
-                transferPaintSize += transferSize;
-            }
-            // 存储首屏之前请求的资源总大小
+            if (!transferSize)
+                return; // 过滤 undefined 和 0 的字段
+            // 计算首屏之前的资源总大小
             if (startTime <= obj.firstScreen) {
                 transferScreenSize += transferSize;
             }
         });
-        obj.transferPaintSize = transferPaintSize; // 白屏之前的资源总大小
         obj.transferScreenSize = transferScreenSize; // 首屏之前的资源总大小
         obj.resource = newResources;
         return JSON.stringify(obj);

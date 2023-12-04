@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 18:03:08
- * @LastEditTime: 2023-12-04 14:42:30
+ * @LastEditTime: 2023-12-04 16:26:13
  * @Description: 自定义的声明文件
  * @FilePath: /web/shin-monitor/src/typings.d.ts
  */
@@ -231,7 +231,6 @@ export interface TypeCaculateTiming {
   maxDOMTreeDepth: number;
   maxChildrenCount: number;
   totalElementCount: number;
-  transferPaintSize: number;
   transferScreenSize: number;
   // 发送到性能参数信息
   token?: string;
