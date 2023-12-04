@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 18:18:45
- * @LastEditTime: 2023-07-10 16:52:33
+ * @LastEditTime: 2023-12-04 14:46:41
  * @Description: 通信
  * @FilePath: /web/shin-monitor/src/lib/http.ts
  */
@@ -110,20 +110,37 @@ class Http {
     obj.pkey = this.params.pkey;
     obj.identity = this.getIdentity();
     obj.referer = location.href; // 来源地址
-    // 静态资源列表
+    /**
+     * 静态资源列表
+     * https://developer.mozilla.org/en-US/docs/Web/API/PerformanceResourceTiming
+     */
     const resources = performance.getEntriesByType('resource');
     const newResources: TypeSendResource[] = [];
+    let transferPaintSize = 0;
+    let transferScreenSize = 0;
     resources && resources.forEach((value: PerformanceResourceTiming): void => {
+      const { name, initiatorType, startTime, duration,transferSize } = value;
       // 过滤 fetch 请求
-      if(value.initiatorType === 'fetch') return;
+      if(initiatorType === 'fetch') return;
       // 只存储 1 分钟内的资源
-      if(value.startTime > 60000) return;
+      if(startTime > 60000) return;
       newResources.push({
-        name: value.name,
-        duration: rounded(value.duration),
-        startTime: rounded(value.startTime),
+        name: name,
+        duration: rounded(duration),
+        startTime: rounded(startTime),
+        transferSize: transferSize      // 资源的总大小，包括HTTP首部
       });
+      // 存储白屏之前请求的资源总大小
+      if(startTime <= obj.firstPaint) {
+        transferPaintSize += transferSize;
+      }
+      // 存储首屏之前请求的资源总大小
+      if(startTime <= obj.firstScreen) {
+        transferScreenSize += transferSize;
+      }
     });
+    obj.transferPaintSize = transferPaintSize;    // 白屏之前的资源总大小
+    obj.transferScreenSize = transferScreenSize;  // 首屏之前的资源总大小
     obj.resource = newResources;
     return JSON.stringify(obj);
   }
