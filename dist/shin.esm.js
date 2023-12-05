@@ -9,7 +9,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 11:19:52
- * @LastEditTime: 2023-07-10 16:45:21
+ * @LastEditTime: 2023-12-05 11:30:02
  * @Description: 工具函数，与业务解耦
  * @FilePath: /web/shin-monitor/src/utils.ts
  */
@@ -36,7 +36,9 @@ var CONSTANT = {
         LINK: 'style',
         IMG: 'image',
         AUDIO: 'audio',
-    }
+    },
+    SHIN_MONITOR_FINGERPRINT: 'shin-monitor-fingerprint',
+    SHIN_BEHAVIOR_DATA: 'shin-behavior-data' // 临时缓存的行为数据key
 };
 /**
  * 均匀获得两个数字之间的随机数，两个数值倒过来也能获得指定区间的数字
@@ -117,7 +119,7 @@ var Http = /** @class */ (function () {
      * 注意，同型号的手机，其 Canvas 指纹是相同的
      */
     Http.prototype.getFingerprint = function () {
-        var key = 'shin-monitor-fingerprint';
+        var key = CONSTANT.SHIN_MONITOR_FINGERPRINT;
         var fingerprint = localStorage.getItem(key);
         if (fingerprint)
             return fingerprint;
@@ -259,6 +261,12 @@ var Http = /** @class */ (function () {
             var str = this.paramifyBehavior(data);
             navigator.sendBeacon(this.params.psrc, str);
         }
+    };
+    /**
+     * 封装 navigator.sendBeacon 方法
+     */
+    Http.prototype.sendBeacon = function (str) {
+        navigator.sendBeacon(this.params.psrc, str);
     };
     return Http;
 }());
@@ -1470,7 +1478,7 @@ var PerformanceMonitor = /** @class */ (function () {
         return api;
     };
     /**
-     * 注册 laod 和页面隐藏事件
+     * 注册 load 和页面隐藏事件
      */
     PerformanceMonitor.prototype.registerLoadAndHideEvent = function (setRecord) {
         var _this = this;
@@ -1484,21 +1492,47 @@ var PerformanceMonitor = /** @class */ (function () {
                 _this.isNeedHideEvent = false;
             }
         };
-        // 发送用户行为数据
-        var sendBehavior = function () {
+        // 计算行为数据
+        var caculateBehavior = function () {
             var behavior = {};
             behavior.duration = rounded(getNowTimestamp() - _this.beginStayTime); // 页面停留时长
+            return behavior;
+        };
+        // 发送用户行为数据
+        var sendBehavior = function () {
+            var behavior = caculateBehavior();
             _this.http.sendBehavior(behavior);
+            localStorage.removeItem(CONSTANT.SHIN_BEHAVIOR_DATA); // 移除行为缓存
+        };
+        /**
+         * 发送缓存的行为数据
+         * 例如停留时长需要在 pagehide 或 beforeunload 两个事件中发送
+         * 但如果两个事件都不支持，那么这个数据就是空的
+         */
+        var sendExistBehavior = function () {
+            var exist = localStorage.getItem(CONSTANT.SHIN_BEHAVIOR_DATA);
+            if (!exist) {
+                return;
+            }
+            _this.http.sendBeacon(exist); // 直接发送，不需要再次封装数据
+            localStorage.removeItem(CONSTANT.SHIN_BEHAVIOR_DATA); // 移除行为缓存
         };
         /**
          * 在 load 事件中，上报性能参数
          * 该事件不可取消，也不会冒泡
          */
         window.addEventListener('load', function () {
+            // 发送缓存的行为数据
+            sendExistBehavior();
             // 加定时器是避免在上报性能参数时，loadEventEnd 为 0，因为事件还没执行完毕
             setTimeout(function () {
                 sendPerformance();
             }, 0);
+            // 通过定时器缓存数据
+            setInterval(function () {
+                var behavior = caculateBehavior();
+                localStorage.setItem(CONSTANT.SHIN_BEHAVIOR_DATA, _this.http.paramifyBehavior(behavior));
+            }, 1000);
         });
         /**
          * iOS 设备不支持 beforeunload 事件，需要使用 pagehide 事件

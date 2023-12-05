@@ -2,13 +2,13 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 18:18:45
- * @LastEditTime: 2023-12-04 16:30:59
+ * @LastEditTime: 2023-12-05 11:38:42
  * @Description: 通信
  * @FilePath: /web/shin-monitor/src/lib/http.ts
  */
 import { TypeShinParams, TypeSendBody, TypeSendParams, 
   TypeSendResource, TypeCaculateTiming, TypeBehavior } from '../typings';
-import { rounded, randomNum, bin2hex } from '../utils';
+import { rounded, randomNum, bin2hex, CONSTANT } from '../utils';
 
 type ParamsCallback = (data: TypeSendParams, body: TypeSendBody) => void;
 
@@ -40,7 +40,7 @@ class Http {
    * 注意，同型号的手机，其 Canvas 指纹是相同的
    */
   private getFingerprint(): string {
-    const key = 'shin-monitor-fingerprint';
+    const key = CONSTANT.SHIN_MONITOR_FINGERPRINT;
     const fingerprint = localStorage.getItem(key);
     if(fingerprint) return fingerprint;
     // 绘制 Canvas
@@ -163,7 +163,7 @@ class Http {
   /**
    * 组装性能变量
    */
-  private paramifyBehavior(obj: TypeBehavior): string {
+  public paramifyBehavior(obj: TypeBehavior): string {
     obj.pkey = this.params.pkey;
     obj.identity = this.getIdentity();
     obj.referer = location.href; // 来源地址
@@ -178,6 +178,13 @@ class Http {
       const str = this.paramifyBehavior(data);
       navigator.sendBeacon(this.params.psrc, str);
     }
+  }
+
+  /**
+   * 封装 navigator.sendBeacon 方法
+   */
+  public sendBeacon(str: string): void {
+    navigator.sendBeacon(this.params.psrc, str);
   }
 }
 export default Http;

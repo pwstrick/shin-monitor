@@ -2,13 +2,13 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 18:18:45
- * @LastEditTime: 2023-11-27 18:41:20
+ * @LastEditTime: 2023-12-05 11:46:22
  * @Description: 性能监控
  * @FilePath: /web/shin-monitor/src/lib/performance.ts
  */
 import { TypeShinParams,TypePerformanceTiming, TypeTiming, TypeLCP,
   TypePerformanceEntry, TypeCaculateTiming, TypeFMP, TypeDOMCount, TypeBehavior } from '../typings';
-import { removeQuote, rounded, getNowTimestamp } from '../utils';
+import { removeQuote, rounded, getNowTimestamp, CONSTANT } from '../utils';
 import FMP from './fmp';
 import Http from './http';
 
@@ -395,7 +395,7 @@ class PerformanceMonitor {
     return api;
   }
   /**
-   * 注册 laod 和页面隐藏事件
+   * 注册 load 和页面隐藏事件
    */
   public registerLoadAndHideEvent(setRecord: ParamsCallback): void {
     // 发送性能数据
@@ -408,21 +408,45 @@ class PerformanceMonitor {
         this.isNeedHideEvent = false;
       }
     };
-    // 发送用户行为数据
-    const sendBehavior = (): void => {
+    // 计算行为数据
+    const caculateBehavior = (): TypeBehavior => {
       const behavior: TypeBehavior = {};
       behavior.duration = rounded(getNowTimestamp() - this.beginStayTime);   // 页面停留时长
+      return behavior;
+    };
+    // 发送用户行为数据
+    const sendBehavior = (): void => {
+      const behavior = caculateBehavior();
       this.http.sendBehavior(behavior);
+      localStorage.removeItem(CONSTANT.SHIN_BEHAVIOR_DATA);     // 移除行为缓存
+    };
+    /**
+     * 发送缓存的行为数据
+     * 例如停留时长需要在 pagehide 或 beforeunload 两个事件中发送
+     * 但如果两个事件都不支持，那么这个数据就是空的
+     */
+    const sendExistBehavior = (): void => {
+      const exist = localStorage.getItem(CONSTANT.SHIN_BEHAVIOR_DATA);
+      if (!exist) { return; }
+      this.http.sendBeacon(exist);                              // 直接发送，不需要再次封装数据
+      localStorage.removeItem(CONSTANT.SHIN_BEHAVIOR_DATA);     // 移除行为缓存
     };
     /**
      * 在 load 事件中，上报性能参数
      * 该事件不可取消，也不会冒泡
      */
     window.addEventListener('load', (): void => {
+      // 发送缓存的行为数据
+      sendExistBehavior();
       // 加定时器是避免在上报性能参数时，loadEventEnd 为 0，因为事件还没执行完毕
       setTimeout((): void => {
         sendPerformance();
       }, 0);
+      // 通过定时器缓存数据
+      setInterval((): void => {
+        const behavior = caculateBehavior();
+        localStorage.setItem(CONSTANT.SHIN_BEHAVIOR_DATA, this.http.paramifyBehavior(behavior));
+      }, 1000);
     });
     /**
      * iOS 设备不支持 beforeunload 事件，需要使用 pagehide 事件

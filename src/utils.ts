@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 11:19:52
- * @LastEditTime: 2023-07-10 16:45:21
+ * @LastEditTime: 2023-12-05 14:06:08
  * @Description: 工具函数，与业务解耦
  * @FilePath: /web/shin-monitor/src/utils.ts
  */
@@ -31,7 +31,9 @@ export const CONSTANT = {
     IMG: 'image',
     AUDIO: 'audio',
     // VIDEO: 'video', //暂时关闭
-  }
+  },
+  SHIN_MONITOR_FINGERPRINT: 'shin-monitor-fingerprint',   // Canvas 指纹缓存key
+  SHIN_BEHAVIOR_DATA: 'shin-behavior-data'                // 临时缓存的行为数据key
 };
 
 /**
