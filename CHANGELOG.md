@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 10:17:17
- * @LastEditTime: 2023-12-04 16:48:16
+ * @LastEditTime: 2023-12-05 14:49:20
  * @Description: 变更日志
  * @FilePath: /web/shin-monitor/CHANGELOG.md
 -->
@@ -109,3 +109,6 @@
 
 ## 1.6.0（2023-12-04）
 * 计算首屏之前的资源总大小
+
+## 1.6.1（2023-12-05）
+* 修复iOS没有停留时长

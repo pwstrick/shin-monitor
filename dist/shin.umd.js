@@ -1,5 +1,5 @@
 /*!
- * shin-monitor 1.6.0 (https://github.com/pwstrick/shin-monitor)
+ * shin-monitor 1.6.1 (https://github.com/pwstrick/shin-monitor)
  * API https://github.com/pwstrick/shin-monitor/blob/master/doc/api.md
  * Copyright 2017-2023 pwstrick. All Rights Reserved
  * Licensed under MIT (https://github.com/pwstrick/shin-monitor/blob/master/LICENSE)
@@ -15,7 +15,7 @@
    * @Author: strick
    * @LastEditors: strick
    * @Date: 2023-01-12 11:19:52
-   * @LastEditTime: 2023-12-05 11:30:02
+   * @LastEditTime: 2023-12-05 14:06:08
    * @Description: 工具函数，与业务解耦
    * @FilePath: /web/shin-monitor/src/utils.ts
    */
