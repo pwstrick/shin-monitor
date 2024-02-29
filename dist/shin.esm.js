@@ -1,7 +1,7 @@
 /*!
  * shin-monitor 1.6.1 (https://github.com/pwstrick/shin-monitor)
  * API https://github.com/pwstrick/shin-monitor/blob/master/doc/api.md
- * Copyright 2017-2023 pwstrick. All Rights Reserved
+ * Copyright 2017-2024 pwstrick. All Rights Reserved
  * Licensed under MIT (https://github.com/pwstrick/shin-monitor/blob/master/LICENSE)
  */
 
@@ -636,8 +636,12 @@ var ActionMonitor = /** @class */ (function () {
         // 若 obj 是 null，则 typeof null 也是 object
         if (type === 'object' && obj !== null) {
             for (var key in obj) {
+                // 读取属性状态
+                var des = Object.getOwnPropertyDescriptor(obj, key);
                 // 当key是只读属性时，就不能直接赋值了
-                obj[key] = this.handleNumber(obj[key]);
+                if (des && des.writable) {
+                    obj[key] = this.handleNumber(obj[key]);
+                }
             }
         }
         if (type === 'number') {
