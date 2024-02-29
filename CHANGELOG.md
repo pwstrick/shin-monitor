@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 10:17:17
- * @LastEditTime: 2023-12-05 14:49:20
+ * @LastEditTime: 2024-02-29 11:49:09
  * @Description: 变更日志
  * @FilePath: /web/shin-monitor/CHANGELOG.md
 -->
@@ -112,3 +112,6 @@
 
 ## 1.6.1（2023-12-05）
 * 修复iOS没有停留时长
+
+## 1.6.2（2024-02-29）
+* 修复Cannot assign to read only property 'size' of object '#Blob'
