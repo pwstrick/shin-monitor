@@ -1,7 +1,7 @@
 /*!
- * shin-monitor 1.6.2 (https://github.com/pwstrick/shin-monitor)
+ * shin-monitor 1.7.1 (https://github.com/pwstrick/shin-monitor)
  * API https://github.com/pwstrick/shin-monitor/blob/master/doc/api.md
- * Copyright 2017-2025 pwstrick. All Rights Reserved
+ * Copyright 2017-2026 pwstrick. All Rights Reserved
  * Licensed under MIT (https://github.com/pwstrick/shin-monitor/blob/master/LICENSE)
  */
 
@@ -107,12 +107,16 @@ var Http = /** @class */ (function () {
         if (!identity) {
             // 生成标识
             identity = Number(Math.random().toString().substring(3, 6) + Date.now()).toString(36);
-            var value = this.params.identity.value;
-            // 与自定义的身份字段合并，自定义字段在前，便于使用 ES 的前缀查询
-            value && (identity = value + '-' + identity);
             sessionStorage.setItem(key, identity);
         }
         return identity;
+    };
+    /**
+     * 自定义的身份标识，例如userId，为了与真实的业务关联
+     */
+    Http.prototype.getIdentityCustom = function () {
+        var value = this.params.identity.value;
+        return value;
     };
     /**
      * Canvas 指纹
@@ -126,6 +130,8 @@ var Http = /** @class */ (function () {
         // 绘制 Canvas
         var canvas = document.createElement('canvas');
         var ctx = canvas.getContext('2d');
+        if (!ctx)
+            return '';
         var txt = 'fingerprint';
         ctx.textBaseline = 'top';
         ctx.font = '16px Arial';
@@ -153,6 +159,8 @@ var Http = /** @class */ (function () {
         obj.token = this.params.token;
         obj.subdir = this.params.subdir;
         obj.identity = this.getIdentity();
+        // 自定义的身份标识，例如userId
+        obj.identityCustom = this.getIdentityCustom();
         obj.fingerprint = this.getFingerprint();
         obj.referer = location.href; // 来源地址，即当前页面地址
         // return encodeURIComponent(JSON.stringify(obj));
@@ -189,6 +197,7 @@ var Http = /** @class */ (function () {
         obj.token = this.params.token;
         obj.pkey = this.params.pkey;
         obj.identity = this.getIdentity();
+        obj.identityCustom = this.getIdentityCustom();
         obj.referer = location.href; // 来源地址
         /**
          * 静态资源列表
@@ -230,9 +239,9 @@ var Http = /** @class */ (function () {
         var str = this.paramifyPerformance(data);
         this.rate = randomNum(10, 1); // 选取1~10之间的整数
         // 命中采样
-        if (this.params.rate >= this.rate && this.params.pkey) {
+        if (this.params.rate && (this.params.rate >= this.rate) && this.params.pkey) {
             // 开启了录像得用 fetch 传输
-            if (this.params.record.isSendInPerformance) {
+            if (this.params.record && this.params.record.isSendInPerformance) {
                 fetch(this.params.psrc, {
                     method: 'POST',
                     body: str,
@@ -249,6 +258,7 @@ var Http = /** @class */ (function () {
     Http.prototype.paramifyBehavior = function (obj) {
         obj.pkey = this.params.pkey;
         obj.identity = this.getIdentity();
+        obj.identityCustom = this.getIdentityCustom();
         obj.referer = location.href; // 来源地址
         return JSON.stringify(obj);
     };
@@ -257,7 +267,7 @@ var Http = /** @class */ (function () {
      */
     Http.prototype.sendBehavior = function (data) {
         // 避免不必要的请求，只有当性能参数发送后，才可以将相应的行为数据发送到服务器中
-        if (this.rate && this.params.rate >= this.rate && this.params.pkey) {
+        if (this.rate && this.params.rate && (this.params.rate >= this.rate) && this.params.pkey) {
             var str = this.paramifyBehavior(data);
             navigator.sendBeacon(this.params.psrc, str);
         }
@@ -283,7 +293,7 @@ var ErrorMonitor = /** @class */ (function () {
      */
     ErrorMonitor.prototype.registerErrorEvent = function () {
         var _this = this;
-        var isFilterErrorFunc = this.params.error.isFilterErrorFunc;
+        var isFilterErrorFunc = this.params.error && this.params.error.isFilterErrorFunc;
         window.addEventListener('error', function (event) {
             var errorTarget = event.target;
             // 过滤掉与业务无关或无意义的错误
@@ -291,15 +301,20 @@ var ErrorMonitor = /** @class */ (function () {
                 return;
             }
             // 过滤 target 为 window 的异常
-            if (errorTarget !== window
-                && errorTarget.nodeName
-                && CONSTANT.LOAD_ERROR_TYPE[errorTarget.nodeName.toUpperCase()]) {
-                _this.handleError(_this.formatLoadError(errorTarget));
+            if (errorTarget !== window) {
+                var target = errorTarget;
+                var nodeName = target.nodeName;
+                if (nodeName) {
+                    var loadErrorKey = nodeName.toUpperCase();
+                    var loadErrorType = CONSTANT.LOAD_ERROR_TYPE[loadErrorKey];
+                    if (loadErrorType) {
+                        _this.handleError(_this.formatLoadError(target));
+                        return;
+                    }
+                }
             }
-            else {
-                // 过滤无效错误
-                event.message && _this.handleError(_this.formatRuntimerError(event.message, event.filename, event.lineno, event.colno));
-            }
+            // 过滤无效错误
+            event.message && _this.handleError(_this.formatRuntimerError(event.message, event.filename, event.lineno, event.colno));
         }, true); // 捕获
     };
     /**
@@ -308,7 +323,7 @@ var ErrorMonitor = /** @class */ (function () {
      */
     ErrorMonitor.prototype.registerUnhandledrejectionEvent = function () {
         var _this = this;
-        var isFilterPromiseFunc = this.params.error.isFilterPromiseFunc;
+        var isFilterPromiseFunc = this.params.error && this.params.error.isFilterPromiseFunc;
         window.addEventListener('unhandledrejection', function (event) {
             // 处理响应数据，只抽取重要信息
             var response = event.reason.response;
@@ -333,8 +348,10 @@ var ErrorMonitor = /** @class */ (function () {
      */
     ErrorMonitor.prototype.recordPage = function () {
         var _this = this;
-        var _a = this.params.record, isOpen = _a.isOpen, src = _a.src;
-        if (!isOpen) {
+        var record = this.params.record;
+        var isOpen = record && record.isOpen;
+        var src = record && record.src;
+        if (!isOpen || !src) {
             return;
         }
         var script = document.createElement('script');
@@ -457,7 +474,9 @@ var ErrorMonitor = /** @class */ (function () {
      */
     ErrorMonitor.prototype.monitorCrash = function () {
         var _this = this;
-        var _a = this.params.crash, isOpen = _a.isOpen, validateFunc = _a.validateFunc;
+        var crash = this.params.crash;
+        var isOpen = crash && crash.isOpen;
+        var validateFunc = crash && crash.validateFunc;
         if (!isOpen) {
             return;
         }
@@ -536,8 +555,10 @@ var ErrorMonitor = /** @class */ (function () {
             var code = errorTarget.error.code;
             code && (desc.message = MEDIA_ERR[code]);
         }
+        var nodeName = errorTarget.nodeName.toUpperCase();
+        var type = CONSTANT.LOAD_ERROR_TYPE[nodeName];
         return {
-            type: CONSTANT.LOAD_ERROR_TYPE[errorTarget.nodeName.toUpperCase()],
+            type: type,
             desc: desc
             // stack: "no stack"
         };
@@ -661,8 +682,11 @@ var ActionMonitor = /** @class */ (function () {
      */
     ActionMonitor.prototype.injectConsole = function () {
         var _this = this;
-        var _a = this.params.console, isOpen = _a.isOpen, isFilterLogFunc = _a.isFilterLogFunc;
-        isOpen && ['log', 'error'].forEach(function (level) {
+        var paramConsole = this.params.console;
+        var isOpen = paramConsole && paramConsole.isOpen;
+        var isFilterLogFunc = paramConsole && paramConsole.isFilterLogFunc;
+        var levels = ['log', 'error'];
+        isOpen && levels.forEach(function (level) {
             var _oldConsole = console[level];
             console[level] = function () {
                 var params = [];
@@ -695,7 +719,7 @@ var ActionMonitor = /** @class */ (function () {
                     // 对普通对象的一般处理
                     if (typeof value === 'object' && value !== null) {
                         if (seen.indexOf(value) >= 0) {
-                            return;
+                            return undefined;
                         }
                         seen.push(value);
                     }
@@ -736,11 +760,8 @@ var ActionMonitor = /** @class */ (function () {
         var _onPopState = window.onpopstate;
         window.onpopstate = function (args) {
             _this.sendRouterInfo();
-            _onPopState && _onPopState.apply(_this, args);
+            _onPopState && _onPopState.call(window, args);
         };
-        /**
-         * 监听 pushState() 和 replaceState() 两个方法
-         */
         var bindEventListener = function (type) {
             var historyEvent = history[type];
             return function () {
@@ -805,7 +826,7 @@ var ActionMonitor = /** @class */ (function () {
             if (nodeName === 'body') {
                 return false;
             }
-            var isFilterClickFunc = _this.params.event.isFilterClickFunc;
+            var isFilterClickFunc = _this.params.event && _this.params.event.isFilterClickFunc;
             // 过滤不需要记录点击事件的元素
             if (isFilterClickFunc && isFilterClickFunc(node))
                 return false;
@@ -818,7 +839,7 @@ var ActionMonitor = /** @class */ (function () {
      */
     ActionMonitor.prototype.injectAjax = function () {
         var _this = this;
-        var isFilterSendFunc = this.params.ajax.isFilterSendFunc;
+        var isFilterSendFunc = this.params.ajax && this.params.ajax.isFilterSendFunc;
         var _XMLHttpRequest = window.XMLHttpRequest; // 保存原生的XMLHttpRequest
         // 覆盖XMLHttpRequest
         window.XMLHttpRequest = function () {
@@ -827,7 +848,8 @@ var ActionMonitor = /** @class */ (function () {
             return req;
         };
         var monitorXHR = function (req) {
-            req.ajax = {};
+            var ajax = {};
+            req.ajax = ajax;
             var self = _this;
             var start; //开始时间
             req.addEventListener('readystatechange', function () {
@@ -854,27 +876,27 @@ var ActionMonitor = /** @class */ (function () {
                         response = {};
                     }
                     var end = getNowTimestamp(); // 结束时间
-                    req.ajax.status = req.status; // 状态码
+                    ajax.status = req.status; // 状态码
                     // 请求成功
                     if ((req.status >= 200 && req.status < 300) || req.status == 304) {
-                        req.ajax.endBytes = kb(responseText.length * 2) + "KB"; // KB
+                        ajax.endBytes = kb(responseText.length * 2) + "KB"; // KB
                     }
                     else {
                         // 请求失败
-                        req.ajax.endBytes = 0;
+                        ajax.endBytes = 0;
                     }
                     // 为监控的响应头添加 req-id 字段，为了与云端的接口日志进行关联
                     var reqId = void 0;
                     // 避免出现 Refused to get unsafe header "req-id" 的错误
                     if (req.getAllResponseHeaders().indexOf('req-id') >= 0)
-                        reqId = req.getResponseHeader('req-id');
+                        reqId = req.getResponseHeader('req-id') || undefined;
                     if (reqId) {
-                        req.ajax.header ? (req.ajax.header['req-id'] = reqId) : (req.ajax.header = { 'req-id': reqId });
+                        ajax.header ? (ajax.header['req-id'] = reqId) : (ajax.header = { 'req-id': reqId });
                     }
-                    req.ajax.interval = rounded(end - start, 2) + "ms"; // 单位毫秒
-                    req.ajax.network = self.network();
+                    ajax.interval = rounded(end - start, 2) + "ms"; // 单位毫秒
+                    ajax.network = self.network();
                     // 只记录6000个字符以内的响应限制，以便让 MySQL 表中的 message 字段能成功存储
-                    responseText.length <= 6000 && (req.ajax.response = response);
+                    responseText.length <= 6000 && (ajax.response = response);
                     // 过滤无意义的通信
                     if (isFilterSendFunc && isFilterSendFunc(req)) {
                         return;
@@ -885,8 +907,8 @@ var ActionMonitor = /** @class */ (function () {
             // “间谍”又对open方法埋入了间谍
             var _open = req.open;
             req.open = function (type, url) {
-                req.ajax.type = type; // 埋点
-                req.ajax.url = url; // 埋点
+                ajax.type = type; // 埋点
+                ajax.url = url; // 埋点
                 return _open.apply(req, arguments);
             };
             // 设置请求首部
@@ -895,7 +917,7 @@ var ActionMonitor = /** @class */ (function () {
                 var _a;
                 // JWT 跨域认证解决方案会在头中增加 Authorization 字段 
                 if (header === 'Authorization') { // 通过 Authorization 可以反查登录账号
-                    req.ajax.header = (_a = {}, _a[header] = value, _a);
+                    ajax.header = (_a = {}, _a[header] = value, _a);
                 }
                 return _setRequestHeader.apply(req, arguments);
             };
@@ -904,8 +926,8 @@ var ActionMonitor = /** @class */ (function () {
             req.send = function (data) {
                 start = getNowTimestamp(); // 埋点
                 if (data) {
-                    req.ajax.startBytes = kb(JSON.stringify(data).length * 2) + "KB";
-                    req.ajax.data = data; // 传递的参数
+                    ajax.startBytes = kb(JSON.stringify(data).length * 2) + "KB";
+                    ajax.data = data; // 传递的参数
                 }
                 return _send.apply(req, arguments);
             };
@@ -944,7 +966,7 @@ var __assign = function() {
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 10:17:17
- * @LastEditTime: 2023-07-19 16:02:24
+ * @LastEditTime: 2026-06-25 11:37:00
  * @Description: FMP的计算
  * @FilePath: /web/shin-monitor/src/lib/fmp.ts
  */
@@ -1061,10 +1083,12 @@ var FMP = /** @class */ (function () {
      */
     FMP.prototype.caculateScore = function (node) {
         var _a = node.getBoundingClientRect(), width = _a.width, height = _a.height;
-        var weight = TAG_WEIGHT_MAP[node.tagName] || 1;
+        var tagName = node.tagName;
+        var weight = TAG_WEIGHT_MAP[tagName] || 1;
+        var style = window.getComputedStyle(node);
         if (weight === 1 &&
-            window.getComputedStyle(node)['background-image'] && // 读取CSS样式中的背景图属性
-            window.getComputedStyle(node)['background-image'] !== 'initial') {
+            style.getPropertyValue('background-image') && // 读取CSS样式中的背景图属性
+            style.getPropertyValue('background-image') !== 'initial') {
             weight = TAG_WEIGHT_MAP['IMG']; //将有图片背景的普通元素 权重设置为img
         }
         return width * height * weight;
@@ -1086,7 +1110,7 @@ var FMP = /** @class */ (function () {
         };
         elements.forEach(function (node) {
             var stage = node.getAttribute(FMP_ATTRIBUTE);
-            var ts = stage ? _this.cacheTrees[stage].ts : 0; // 从缓存中读取时间
+            var ts = stage ? _this.cacheTrees[Number(stage)].ts : 0; // 从缓存中读取时间
             switch (node.tagName) {
                 case 'IMG':
                     ts = resources[node.src];
@@ -1097,10 +1121,10 @@ var FMP = /** @class */ (function () {
                     break;
                 default: {
                     // 读取背景图地址
-                    var match = window.getComputedStyle(node)['background-image'].match(/url\(\"(.*?)\"\)/);
+                    var match = window.getComputedStyle(node).getPropertyValue('background-image').match(/url\(\"(.*?)\"\)/);
                     if (!match)
                         break;
-                    var src = void 0;
+                    var src = '';
                     // 判断是否包含协议
                     if (match[1]) {
                         src = match[1];
@@ -1167,11 +1191,12 @@ var PerformanceMonitor = /** @class */ (function () {
         }
         var navigationStart;
         if (timing.startTime === undefined) {
-            navigationStart = timing.navigationStart;
+            navigationStart = timing.navigationStart || 0;
             var cloneTiming = {};
             // 不能直接将 timing 传递进去，因为 timing 的属性都是只读的
             for (var key in timing) {
-                cloneTiming[key] = timing[key];
+                var timingKey = key;
+                cloneTiming[key] = timing[timingKey];
             }
             // 消除为 0 的性能参数
             this.setTimingDefaultValue(cloneTiming);
@@ -1253,7 +1278,9 @@ var PerformanceMonitor = /** @class */ (function () {
             var entries = entryList.getEntries();
             var firstInput = entries[0];
             // 测量第一个输入事件的延迟
-            _this.fid = rounded(firstInput.processingStart - firstInput.startTime);
+            if (typeof firstInput.processingStart === 'number') {
+                _this.fid = rounded(firstInput.processingStart - firstInput.startTime);
+            }
             /**
              * 测量第一个输入事件的持续时间
              * 仅在处理程序中同步完成重要事件处理工作时使用
@@ -1311,7 +1338,7 @@ var PerformanceMonitor = /** @class */ (function () {
         if (!timing) {
             return null;
         }
-        var navigationStart = currentTiming.navigationStart;
+        var navigationStart = currentTiming.navigationStart || 0;
         // api.navigationStart = navigationStart;
         /**
          * http://javascript.ruanyifeng.com/bom/performance.html
@@ -1448,8 +1475,11 @@ var PerformanceMonitor = /** @class */ (function () {
         */
         api.now = getNowTimestamp();
         // 全部取整
-        for (var keyName in api) {
-            api[keyName] = rounded(api[keyName]);
+        var apiMap = api; //做一次断言
+        for (var keyName in apiMap) {
+            if (typeof apiMap[keyName] === 'number') {
+                apiMap[keyName] = rounded(apiMap[keyName]);
+            }
         }
         // 读取FMP信息
         var fmp = this.fmpObj.getFMP();
@@ -1463,15 +1493,18 @@ var PerformanceMonitor = /** @class */ (function () {
          * 浏览器读取到的性能参数，用于排查，并保留两位小数
          */
         api.timing = {};
+        var apiTiming = api.timing;
         for (var key in timing) {
-            var timingValue = timing[key];
+            var timingKey = key;
+            var timingValue = timing[timingKey];
             var type = typeof timingValue;
             if (type === 'function') {
                 continue;
             }
-            api.timing[key] = timingValue;
-            if (type === 'number') {
-                api.timing[key] = rounded(timingValue, 2);
+            apiTiming[key] = timingValue;
+            // 写type === 'number'会报ts断言错误，所以修改成原始判断
+            if (typeof timingValue === 'number') {
+                apiTiming[key] = rounded(timingValue, 2);
             }
         }
         // 取 FMP、LCP 和用户可操作时间中的最大值
@@ -1491,7 +1524,7 @@ var PerformanceMonitor = /** @class */ (function () {
             var data = _this.getTimes();
             if (_this.isNeedHideEvent && data) {
                 // 只有开启了存储录像回放，才会执行 setRecord 回调
-                _this.params.record.isSendInPerformance && setRecord(data);
+                _this.params.record && _this.params.record.isSendInPerformance && setRecord(data);
                 _this.http.sendPerformance(data);
                 _this.isNeedHideEvent = false;
             }
@@ -1556,7 +1589,7 @@ var PerformanceMonitor = /** @class */ (function () {
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 10:17:17
- * @LastEditTime: 2023-07-04 14:40:03
+ * @LastEditTime: 2026-06-25 14:22:10
  * @Description: 入口，自动初始化
  * @FilePath: /web/shin-monitor/src/index.ts
  */
@@ -1608,24 +1641,26 @@ var shin = {
  */
 function setParams(params) {
     if (!params) {
-        return null;
+        return defaults;
     }
     var combination = defaults;
+    var paramsMap = params;
+    var combinationMap = combination;
     // 为所有参数赋默认值
-    for (var key in params) {
-        var value = params[key];
+    for (var key in paramsMap) {
+        var value = paramsMap[key];
         // 当参数值是对象时，需要对其属性挨个赋值
         if (typeof value === 'object') {
             for (var childKey in value) {
-                combination[key][childKey] = value[childKey];
+                combinationMap[key][childKey] = value[childKey];
             }
         }
         else {
-            combination[key] = value;
+            combinationMap[key] = value;
         }
     }
     // 埋入自定义的身份信息
-    var getFunc = combination.identity.getFunc;
+    var getFunc = combination.identity && combination.identity.getFunc;
     getFunc && getFunc(combination);
     // 监控页面错误
     var error = new ErrorMonitor(combination);

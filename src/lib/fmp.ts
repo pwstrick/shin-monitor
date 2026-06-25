@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 10:17:17
- * @LastEditTime: 2023-07-19 16:02:24
+ * @LastEditTime: 2026-06-25 11:37:00
  * @Description: FMP的计算
  * @FilePath: /web/shin-monitor/src/lib/fmp.ts
  */
@@ -26,7 +26,11 @@ interface TypeMaxElement {
   ts: number;
   element: Element | string;
 }
-
+interface TypeMaxScoreElement {
+  score: number;
+  elements: Element[];
+  ts: number;
+}
 class FMP { 
   private cacheTrees: TypeTree[];
   private callbackCount: number;
@@ -36,7 +40,7 @@ class FMP {
     this.callbackCount = 0;     // DOM 变化的计数
     // 开始监控DOM的变化
     this.observer = new MutationObserver((): void => {
-      const mutationsList = [];
+      const mutationsList: HTMLElement[] = [];
       // 从 body 元素开始遍历
       document.body && this.doTag(document.body, this.callbackCount++, mutationsList);
       this.cacheTrees.push({
@@ -78,12 +82,13 @@ class FMP {
     const { left, top } = node.getBoundingClientRect();
     return  WH < top || WW < left;
   }
+  
   /**
    * 读取 FMP 信息
    */
   public getFMP(): TypeMaxElement {
     this.observer.disconnect(); // 停止监听
-    const maxObj = {
+    const maxObj: TypeMaxScoreElement = {
       score: -1,  //最高分
       elements: [],   // 首屏元素
       ts: 0   // DOM变化时的时间戳
@@ -92,7 +97,7 @@ class FMP {
     this.cacheTrees.forEach((tree): void => {
       let score = 0;
       // 首屏内的元素
-      let firstScreenElements = [];
+      let firstScreenElements: Element[] = [];
       tree.children.forEach((node): void => {
         // 只记录元素
         if(node.nodeType !== 1 || IGNORE_TAG_SET.indexOf(node.tagName) >= 0) {
@@ -129,11 +134,13 @@ class FMP {
    */
   private caculateScore(node: Element): number {
     const { width, height } = node.getBoundingClientRect();
-    let weight = TAG_WEIGHT_MAP[node.tagName] || 1;
+    const tagName = node.tagName as keyof typeof TAG_WEIGHT_MAP;
+    let weight = TAG_WEIGHT_MAP[tagName] || 1;
+    const style = window.getComputedStyle(node);
     if (
       weight === 1 &&
-        window.getComputedStyle(node)['background-image'] && // 读取CSS样式中的背景图属性
-        window.getComputedStyle(node)['background-image'] !== 'initial'
+        style.getPropertyValue('background-image') && // 读取CSS样式中的背景图属性
+        style.getPropertyValue('background-image') !== 'initial'
     ) {
       weight = TAG_WEIGHT_MAP['IMG']; //将有图片背景的普通元素 权重设置为img
     }
@@ -144,9 +151,9 @@ class FMP {
    */
   private getElementMaxTimeConsuming(elements: Element[], observerTime: number): TypeMaxElement {
     // 记录静态资源的响应结束时间
-    const resources = {};
+    const resources: Record<string, number> = {};
     // 遍历静态资源的时间信息
-    performance.getEntries().forEach((item: PerformanceResourceTiming): void => {
+    (performance.getEntries() as PerformanceResourceTiming[]).forEach((item: PerformanceResourceTiming): void => {
       resources[item.name] = item.responseEnd;
     });
     const maxObj: TypeMaxElement = {
@@ -155,7 +162,7 @@ class FMP {
     };
     elements.forEach((node: Element): void => {
       const stage = node.getAttribute(FMP_ATTRIBUTE);
-      let ts = stage ? this.cacheTrees[stage].ts : 0;  // 从缓存中读取时间
+      let ts = stage ? this.cacheTrees[Number(stage)].ts : 0;  // 从缓存中读取时间
       switch(node.tagName) {
         case 'IMG':
           ts = resources[(node as HTMLImageElement).src];
@@ -166,9 +173,9 @@ class FMP {
           break;
         default: {
           // 读取背景图地址
-          const match = window.getComputedStyle(node)['background-image'].match(/url\(\"(.*?)\"\)/);
+          const match = window.getComputedStyle(node).getPropertyValue('background-image').match(/url\(\"(.*?)\"\)/);
           if(!match) break;
-          let src: string;
+          let src = '';
           // 判断是否包含协议
           if (match[1]) {
             src = match[1];

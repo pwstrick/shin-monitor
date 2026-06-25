@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 10:17:17
- * @LastEditTime: 2023-01-12 14:59:58
+ * @LastEditTime: 2026-06-25 15:02:11
  * @Description: rollup.config.js
  * @FilePath: /web/shin-monitor/config/rollup.config.esm.js
  */
@@ -19,6 +19,13 @@ module.exports = {
     banner: common.banner,
   },
   plugins: [
-    common.getCompiler()
+    common.getCompiler({
+      tsconfigOverride: {
+        compilerOptions: {
+          module: 'ES2015',
+          declaration: false
+        }
+      }
+    })
   ]
 };

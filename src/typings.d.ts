@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 18:03:08
- * @LastEditTime: 2023-12-04 16:26:13
+ * @LastEditTime: 2026-06-25 12:01:29
  * @Description: 自定义的声明文件
  * @FilePath: /web/shin-monitor/src/typings.d.ts
  */
@@ -23,7 +23,7 @@ export interface TypeCrashResult {
 // 奔溃参数
 export interface TypeCrashPrams {
   isOpen: boolean;
-  validateFunc: () => TypeCrashResult | null; 
+  validateFunc: (() => TypeCrashResult | null)| null; 
 }
 // 录像参数
 export interface TypeRecord {
@@ -33,26 +33,26 @@ export interface TypeRecord {
 }
 // 错误参数
 export interface TypeError {
-  isFilterErrorFunc: (event: ErrorEvent) => boolean | null; 
-  isFilterPromiseFunc: (desc: TypeAjaxDesc) => boolean | null; 
+  isFilterErrorFunc: ((event: ErrorEvent) => boolean | null) | null; 
+  isFilterPromiseFunc: ((desc: TypeAjaxDesc) => boolean | null) | null; 
 }
 // 打印参数
 export interface TypeConsole {
   isOpen: boolean;
-  isFilterLogFunc: (desc: string) => boolean | null; 
+  isFilterLogFunc: ((desc: string) => boolean | null) | null; 
 }
 // 身份信息参数 
 export interface TypeIdentity {
   value: string;
-  getFunc: (params: TypeShinParams) => void| null;
+  getFunc: ((params: TypeShinParams) => void| null) | null; 
 }
 // 事件参数
 export interface TypeEvent {
-  isFilterClickFunc: (element: HTMLElement) => boolean | null; 
+  isFilterClickFunc: ((element: HTMLElement) => boolean | null) | null; 
 }
 // Ajax参数
 export interface TypeAjax {
-  isFilterSendFunc: (req: TypeAjaxRequest) => boolean | null; 
+  isFilterSendFunc: ((req: TypeAjaxRequest) => boolean | null) | null; 
 }
 // 监控系统所有的参数
 export interface TypeShinParams {
@@ -89,7 +89,7 @@ export interface TypeWhiteHTMLNode {
 }
 // 白屏函数的返回值
 export interface TypeWhiteScreen {
-  visibles: TypeWhiteHTMLNode[];
+  visibles: HTMLElement[];
   nodes: TypeWhiteHTMLNode[];
 }
 // 奔溃错误的描述信息
@@ -154,6 +154,7 @@ export interface TypeSendParams {
   token?: string;
   subdir?: string;
   identity?: string;
+  identityCustom?: string;
   referer?: string;
   author?: string;
   fingerprint?: string;
@@ -236,6 +237,7 @@ export interface TypeCaculateTiming {
   token?: string;
   pkey?: string;
   identity?: string;
+  identityCustom?: string;
   referer?: string;
   resource: TypeSendResource[];
   record?: string;
@@ -245,6 +247,7 @@ export interface TypeBehavior {
   token?: string;
   pkey?: string;
   identity?: string;
+  identityCustom?: string;
   referer?: string;
   duration?: number;
 }

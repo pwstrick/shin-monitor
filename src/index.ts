@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 10:17:17
- * @LastEditTime: 2023-07-04 14:40:03
+ * @LastEditTime: 2026-06-25 14:22:10
  * @Description: 入口，自动初始化
  * @FilePath: /web/shin-monitor/src/index.ts
  */
@@ -65,23 +65,25 @@ const shin: TypeShin = {
  */
 function setParams(params: TypeShinParams): TypeShinParams {
   if (!params) {
-    return null;
+    return defaults;
   }
   const combination = defaults;
+  const paramsMap = params as Record<string, any>;
+  const combinationMap = combination as Record<string, any>;
   // 为所有参数赋默认值
-  for(const key in params) {
-    const value = params[key];
+  for(const key in paramsMap) {
+    const value = paramsMap[key];
     // 当参数值是对象时，需要对其属性挨个赋值
     if(typeof value === 'object') {
       for(const childKey in value) {
-        combination[key][childKey] = value[childKey];
+        combinationMap[key][childKey] = value[childKey];
       }
     }else {
-      combination[key] = value;
+      combinationMap[key] = value;
     }
   }
   // 埋入自定义的身份信息
-  const { getFunc } = combination.identity;
+  const getFunc = combination.identity && combination.identity.getFunc;
   getFunc && getFunc(combination);
   
   // 监控页面错误

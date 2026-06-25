@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 10:17:17
- * @LastEditTime: 2024-02-29 11:49:09
+ * @LastEditTime: 2026-06-25 14:52:45
  * @Description: 变更日志
  * @FilePath: /web/shin-monitor/CHANGELOG.md
 -->
@@ -115,3 +115,7 @@
 
 ## 1.6.2（2024-02-29）
 * 修复Cannot assign to read only property 'size' of object '#Blob'
+
+## 1.7.1（2026-06-25）
+* 增加 identityCustom 字段，传递业务身份标识，例如 userId
+* 修复 TypeScript 的各类报错

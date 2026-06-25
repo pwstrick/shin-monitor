@@ -2,19 +2,19 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 18:18:45
- * @LastEditTime: 2023-12-05 11:38:42
+ * @LastEditTime: 2026-06-25 10:35:38
  * @Description: 通信
  * @FilePath: /web/shin-monitor/src/lib/http.ts
  */
 import { TypeShinParams, TypeSendBody, TypeSendParams, 
-  TypeSendResource, TypeCaculateTiming, TypeBehavior } from '../typings';
+  TypeSendResource, TypeCaculateTiming, TypeBehavior,  TypeIdentity} from '../typings';
 import { rounded, randomNum, bin2hex, CONSTANT } from '../utils';
 
 type ParamsCallback = (data: TypeSendParams, body: TypeSendBody) => void;
 
 class Http {
   private params: TypeShinParams;   // 内部私有变量
-  private rate: number;             // 采样数
+  private rate?: number;             // 采样数
   public constructor(params: TypeShinParams) {
     this.params = params;
   }
@@ -28,12 +28,16 @@ class Http {
     if (!identity) {
       // 生成标识
       identity = Number(Math.random().toString().substring(3, 6) + Date.now()).toString(36);
-      const { value } = this.params.identity;
-      // 与自定义的身份字段合并，自定义字段在前，便于使用 ES 的前缀查询
-      value && (identity = value + '-' + identity); 
       sessionStorage.setItem(key, identity);
     }
     return identity;
+  }
+  /**
+   * 自定义的身份标识，例如userId，为了与真实的业务关联
+   */
+  private getIdentityCustom(): string {
+    const { value } = this.params.identity as TypeIdentity;
+    return value;
   }
   /**
    * Canvas 指纹
@@ -46,6 +50,7 @@ class Http {
     // 绘制 Canvas
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
+    if (!ctx) return '';
     const txt = 'fingerprint';
     ctx.textBaseline = 'top';
     ctx.font = '16px Arial';
@@ -73,6 +78,8 @@ class Http {
     obj.token = this.params.token;
     obj.subdir = this.params.subdir;
     obj.identity = this.getIdentity();
+    // 自定义的身份标识，例如userId
+    obj.identityCustom = this.getIdentityCustom();
     obj.fingerprint = this.getFingerprint();
     obj.referer = location.href;  // 来源地址，即当前页面地址
     // return encodeURIComponent(JSON.stringify(obj));
@@ -109,15 +116,16 @@ class Http {
     obj.token = this.params.token;
     obj.pkey = this.params.pkey;
     obj.identity = this.getIdentity();
+    obj.identityCustom = this.getIdentityCustom();
     obj.referer = location.href; // 来源地址
     /**
      * 静态资源列表
      * https://developer.mozilla.org/en-US/docs/Web/API/PerformanceResourceTiming
      */
-    const resources = performance.getEntriesByType('resource');
+    const resources = performance.getEntriesByType('resource') as PerformanceResourceTiming[];
     const newResources: TypeSendResource[] = [];
     let transferScreenSize = 0;
-    resources && resources.forEach((value: PerformanceResourceTiming): void => {
+    resources && resources.forEach((value): void => {
       const { name, initiatorType, startTime, duration,transferSize } = value;
       // 过滤 fetch 请求
       if(initiatorType === 'fetch') return;
@@ -147,9 +155,9 @@ class Http {
     const str = this.paramifyPerformance(data);
     this.rate = randomNum(10, 1); // 选取1~10之间的整数
     // 命中采样
-    if (this.params.rate >= this.rate && this.params.pkey) {
+    if (this.params.rate && (this.params.rate >= this.rate) && this.params.pkey) {
       // 开启了录像得用 fetch 传输
-      if(this.params.record.isSendInPerformance) {
+      if(this.params.record && this.params.record.isSendInPerformance) {
         fetch(this.params.psrc, {
           method: 'POST',
           body: str,
@@ -166,6 +174,7 @@ class Http {
   public paramifyBehavior(obj: TypeBehavior): string {
     obj.pkey = this.params.pkey;
     obj.identity = this.getIdentity();
+    obj.identityCustom = this.getIdentityCustom();
     obj.referer = location.href; // 来源地址
     return JSON.stringify(obj);
   }
@@ -174,7 +183,7 @@ class Http {
    */
   public sendBehavior(data: TypeBehavior): void {
     // 避免不必要的请求，只有当性能参数发送后，才可以将相应的行为数据发送到服务器中
-    if(this.rate && this.params.rate >= this.rate && this.params.pkey) {
+    if(this.rate && this.params.rate && (this.params.rate >= this.rate) && this.params.pkey) {
       const str = this.paramifyBehavior(data);
       navigator.sendBeacon(this.params.psrc, str);
     }

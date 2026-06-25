@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-13 23:18:14
- * @LastEditTime: 2023-01-15 14:29:30
+ * @LastEditTime: 2026-06-25 14:58:47
  * @Description: rollup.config.custom.js
  * @FilePath: /web/shin-monitor/config/rollup.config.custom.js
  */
@@ -33,7 +33,14 @@ module.exports = {
     commonjs({
       include: 'node_modules/**',
     }),
-    common.getCompiler(),
+    common.getCompiler({
+      tsconfigOverride: {
+        compilerOptions: {
+          module: 'ES2015',
+          declaration: false
+        }
+      }
+    }),
     (prod && uglify())
   ]
 };

@@ -2,11 +2,11 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 14:24:20
- * @LastEditTime: 2024-02-29 11:41:18
+ * @LastEditTime: 2026-06-25 14:32:56
  * @Description: 用户行为监控
  * @FilePath: /web/shin-monitor/src/lib/action.ts
  */
-import { TypeShinParams, NavigatorNetworkInformation, TypeNetwork, TypeAjaxRequest } from '../typings';
+import { TypeShinParams, NavigatorNetworkInformation, TypeNetwork, TypeAjaxRequest, TypeAjaxDesc } from '../typings';
 import { rounded, CONSTANT, removeQuote, kb, getNowTimestamp } from '../utils';
 import Http from './http';
 // history.pushState 和 pushState.replaceState 两个函数类型
@@ -54,8 +54,11 @@ class ActionMonitor {
    * 重置 console.log 的动作
    */
   public injectConsole(): void {
-    const { isOpen, isFilterLogFunc } = this.params.console;
-    isOpen && ['log', 'error'].forEach((level): void => {
+    const paramConsole = this.params.console;
+    const isOpen = paramConsole && paramConsole.isOpen;
+    const isFilterLogFunc = paramConsole && paramConsole.isFilterLogFunc;
+    const levels: ('log' | 'error')[] = ['log', 'error'];
+    isOpen && levels.forEach((level): void => {
       const _oldConsole = console[level];
       console[level] = (...params): void => {
         _oldConsole.apply(this, params); // 执行原先的 console 方法
@@ -64,7 +67,7 @@ class ActionMonitor {
         for(const value of params) {
           // 不能使用 typeof 读取实例类型
           if(Object.prototype.toString.call(value) === '[object Error]') {
-            const errorObj = {};
+            const errorObj: Record<string, any> = {};
             // 遍历错误实例的属性
             Object.getOwnPropertyNames(value).forEach((prop): void => {
               errorObj[prop] = value[prop];
@@ -74,13 +77,13 @@ class ActionMonitor {
           }
           replaceParams.push(value);
         }
-        const seen = [];
+        const seen: object[] = [];
         // 避免循环引用
-        const desc = JSON.stringify(replaceParams, (key, value): boolean | string | number => {
+        const desc = JSON.stringify(replaceParams, (key, value): any => {
           // 对普通对象的一般处理
           if (typeof value === 'object' && value !== null) {
             if (seen.indexOf(value) >= 0) {
-              return;
+              return undefined;
             }
             seen.push(value);
           }
@@ -120,12 +123,13 @@ class ActionMonitor {
     const _onPopState = window.onpopstate;
     window.onpopstate = (args: PopStateEvent): void => {
       this.sendRouterInfo();
-      _onPopState && _onPopState.apply(this, args);
+      _onPopState && _onPopState.call(window, args);
     };
     /**
      * 监听 pushState() 和 replaceState() 两个方法
      */
-    const bindEventListener = (type: string): TypeStateEvent => {
+    type HistoryMethod = 'pushState' | 'replaceState';
+    const bindEventListener = (type: HistoryMethod): TypeStateEvent => {
       const historyEvent: TypeStateEvent = history[type];
       return (...args): void => {
         // 触发 history 的原始事件，apply 的第一个参数若不是 history，就会报错
@@ -183,7 +187,7 @@ class ActionMonitor {
       if(nodeName === 'body') {
         return false;
       }
-      const { isFilterClickFunc } = this.params.event;
+      const isFilterClickFunc = this.params.event && this.params.event.isFilterClickFunc;
       // 过滤不需要记录点击事件的元素
       if(isFilterClickFunc && isFilterClickFunc(node)) return false;
       return true;
@@ -194,7 +198,7 @@ class ActionMonitor {
    * https://github.com/HubSpot/pace
    */
   public injectAjax(): void {
-    const { isFilterSendFunc } = this.params.ajax;
+    const isFilterSendFunc = this.params.ajax && this.params.ajax.isFilterSendFunc;
     const _XMLHttpRequest = (window as any).XMLHttpRequest; // 保存原生的XMLHttpRequest
     // 覆盖XMLHttpRequest
     (window as any).XMLHttpRequest = (): XMLHttpRequest => {
@@ -203,7 +207,8 @@ class ActionMonitor {
       return req;
     };
     const monitorXHR = (req: TypeAjaxRequest ): void => {
-      req.ajax = {} as any;
+      const ajax: Partial<TypeAjaxDesc> = {};
+      req.ajax = ajax as TypeAjaxDesc;
       const self = this;
       let start: number;    //开始时间
       req.addEventListener('readystatechange', function (): void {
@@ -228,26 +233,26 @@ class ActionMonitor {
             response = {};
           }
           const end = getNowTimestamp();    // 结束时间
-          req.ajax.status = req.status;     // 状态码
+          ajax.status = req.status;     // 状态码
           // 请求成功
           if ((req.status >= 200 && req.status < 300) || req.status == 304) {
-            req.ajax.endBytes = `${kb(responseText.length * 2)}KB`; // KB
+            ajax.endBytes = `${kb(responseText.length * 2)}KB`; // KB
           } else {
             // 请求失败
-            req.ajax.endBytes = 0;
+            ajax.endBytes = 0;
           }
           // 为监控的响应头添加 req-id 字段，为了与云端的接口日志进行关联
           let reqId: string|undefined;
           // 避免出现 Refused to get unsafe header "req-id" 的错误
           if(req.getAllResponseHeaders().indexOf('req-id') >= 0)
-            reqId = req.getResponseHeader('req-id');
+            reqId = req.getResponseHeader('req-id') || undefined;
           if(reqId) {
-            req.ajax.header ? (req.ajax.header['req-id'] = reqId) : (req.ajax.header = { 'req-id':reqId });
+            ajax.header ? (ajax.header['req-id'] = reqId) : (ajax.header = { 'req-id':reqId });
           }
-          req.ajax.interval = `${rounded(end - start, 2)}ms`; // 单位毫秒
-          req.ajax.network = self.network();
+          ajax.interval = `${rounded(end - start, 2)}ms`; // 单位毫秒
+          ajax.network = self.network();
           // 只记录6000个字符以内的响应限制，以便让 MySQL 表中的 message 字段能成功存储
-          responseText.length <= 6000 && (req.ajax.response = response);
+          responseText.length <= 6000 && (ajax.response = response);
           // 过滤无意义的通信
           if (isFilterSendFunc && isFilterSendFunc(req)) { 
             return;
@@ -259,8 +264,8 @@ class ActionMonitor {
       // “间谍”又对open方法埋入了间谍
       const _open = req.open;
       req.open = function (type: string, url: string): void {
-        req.ajax.type = type; // 埋点
-        req.ajax.url = url; // 埋点
+        ajax.type = type; // 埋点
+        ajax.url = url; // 埋点
         return _open.apply(req, arguments);
       };
       // 设置请求首部
@@ -268,7 +273,7 @@ class ActionMonitor {
       req.setRequestHeader = function (header, value): void {
         // JWT 跨域认证解决方案会在头中增加 Authorization 字段 
         if(header === 'Authorization') {  // 通过 Authorization 可以反查登录账号
-          req.ajax.header = {
+          ajax.header = {
             [header]: value
           };
         }
@@ -279,8 +284,8 @@ class ActionMonitor {
       req.send = function (data?: string): void {
         start = getNowTimestamp(); // 埋点
         if (data) {
-          req.ajax.startBytes = `${kb(JSON.stringify(data).length * 2)}KB`;
-          req.ajax.data = data; // 传递的参数
+          ajax.startBytes = `${kb(JSON.stringify(data).length * 2)}KB`;
+          ajax.data = data; // 传递的参数
         }
         return _send.apply(req, arguments);
       };

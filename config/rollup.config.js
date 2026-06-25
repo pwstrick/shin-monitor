@@ -20,8 +20,8 @@ module.exports = {
   },
   plugins: [
     common.getCompiler({
-      tsconfigOverride: { compilerOptions : { declaration: true, module: 'ES2015' } },
-      useTsconfigDeclarationDir: true
+      tsconfigOverride: { compilerOptions : { declaration: false, module: 'ES2015' } },
+      // useTsconfigDeclarationDir: true
     })
   ]
 };

@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 18:18:45
- * @LastEditTime: 2023-12-05 11:46:22
+ * @LastEditTime: 2026-06-25 11:57:42
  * @Description: 性能监控
  * @FilePath: /web/shin-monitor/src/lib/performance.ts
  */
@@ -62,11 +62,12 @@ class PerformanceMonitor {
     }
     let navigationStart: number;
     if (timing.startTime === undefined) {
-      navigationStart = timing.navigationStart;
-      const cloneTiming: TypePerformanceTiming = {} as any;
+      navigationStart = timing.navigationStart || 0;
+      const cloneTiming: Record<string, any> = {};
       // 不能直接将 timing 传递进去，因为 timing 的属性都是只读的
       for(const key in timing) {
-        cloneTiming[key] = timing[key];
+        const timingKey = key as keyof TypePerformanceTiming;
+        cloneTiming[key] = timing[timingKey];
       }
       // 消除为 0 的性能参数
       this.setTimingDefaultValue(cloneTiming);
@@ -75,7 +76,7 @@ class PerformanceMonitor {
        * 当 performance.now 是最新版本时，数值的位数要比 timing 中的少很多
        */
       now = new Date().getTime() - navigationStart;
-      return { timing: cloneTiming, navigationStart, now: rounded(now)};
+      return { timing: cloneTiming as TypePerformanceTiming, navigationStart, now: rounded(now)};
     } 
     navigationStart = timing.startTime;
     now = getNowTimestamp() - navigationStart;
@@ -145,7 +146,9 @@ class PerformanceMonitor {
       const entries = entryList.getEntries();
       const firstInput = (entries as any)[0] as TypePerformanceEntry;
       // 测量第一个输入事件的延迟
-      this.fid = rounded(firstInput.processingStart - firstInput.startTime);
+      if (typeof firstInput.processingStart === 'number') {
+        this.fid = rounded(firstInput.processingStart - firstInput.startTime);
+      }
       /**
        * 测量第一个输入事件的持续时间
        * 仅在处理程序中同步完成重要事件处理工作时使用
@@ -204,7 +207,7 @@ class PerformanceMonitor {
     if (!timing) {
       return null;
     }
-    const navigationStart = currentTiming.navigationStart;
+    const navigationStart = currentTiming.navigationStart || 0;
     // api.navigationStart = navigationStart;
 
     /**
@@ -363,8 +366,11 @@ class PerformanceMonitor {
     api.now = getNowTimestamp();
 
     // 全部取整
-    for (const keyName in api) {
-      api[keyName] = rounded(api[keyName]);
+    const apiMap = api as Record<string, any>;  //做一次断言
+    for (const keyName in apiMap) {
+      if (typeof apiMap[keyName] === 'number') {
+        apiMap[keyName] = rounded(apiMap[keyName]);
+      }
     }
     
     // 读取FMP信息
@@ -380,12 +386,15 @@ class PerformanceMonitor {
      * 浏览器读取到的性能参数，用于排查，并保留两位小数
      */
     api.timing = {} as any;
+    const apiTiming = api.timing as Record<string, any>;
     for (const key in timing) {
-      const timingValue = timing[key];
+      const timingKey = key as keyof TypePerformanceTiming;
+      const timingValue = timing[timingKey];
       const type = typeof timingValue;
       if (type === 'function') { continue; }
-      api.timing[key] = timingValue;
-      if (type === 'number') { api.timing[key] = rounded(timingValue, 2); }
+      apiTiming[key] = timingValue;
+      // 写type === 'number'会报ts断言错误，所以修改成原始判断
+      if (typeof timingValue === 'number') { apiTiming[key] = rounded(timingValue, 2); }
     }
     // 取 FMP、LCP 和用户可操作时间中的最大值
     api.firstScreen = Math.max.call(undefined, this.fmp.time, this.lcp.time, api.domReadyTime);
@@ -403,7 +412,7 @@ class PerformanceMonitor {
       const data = this.getTimes();
       if(this.isNeedHideEvent && data) {
         // 只有开启了存储录像回放，才会执行 setRecord 回调
-        this.params.record.isSendInPerformance && setRecord(data);
+        this.params.record && this.params.record.isSendInPerformance && setRecord(data);
         this.http.sendPerformance(data);
         this.isNeedHideEvent = false;
       }

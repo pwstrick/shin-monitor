@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 14:21:36
- * @LastEditTime: 2023-11-10 14:06:38
+ * @LastEditTime: 2026-06-25 14:30:51
  * @Description: 监控各类错误
  * @FilePath: /web/shin-monitor/src/lib/error.ts
  */
@@ -36,7 +36,7 @@ class ErrorMonitor {
    * https://github.com/BetterJS/badjs-report
    */
   public registerErrorEvent(): void {
-    const { isFilterErrorFunc } = this.params.error;
+    const isFilterErrorFunc = this.params.error && this.params.error.isFilterErrorFunc;
     window.addEventListener('error', (event: ErrorEvent): void => {
       const errorTarget = event.target as (Window | TypeEventTarget);
       // 过滤掉与业务无关或无意义的错误
@@ -44,24 +44,28 @@ class ErrorMonitor {
         return;
       }
       // 过滤 target 为 window 的异常
-      if (
-        errorTarget !== window
-          && (errorTarget as TypeEventTarget).nodeName
-          && CONSTANT.LOAD_ERROR_TYPE[(errorTarget as TypeEventTarget).nodeName.toUpperCase()]
-      ) {
-        this.handleError(this.formatLoadError(errorTarget as TypeEventTarget));
-      } else {
-        // 过滤无效错误
-        event.message && this.handleError(
-          this.formatRuntimerError(
-            event.message,
-            event.filename,
-            event.lineno,
-            event.colno,
-            // event.error,
-          ),
-        );
+      if (errorTarget !== window) {
+        const target = errorTarget as TypeEventTarget;
+        const nodeName = target.nodeName;
+        if(nodeName) {
+          const loadErrorKey = nodeName.toUpperCase() as keyof typeof CONSTANT.LOAD_ERROR_TYPE;
+          const loadErrorType = CONSTANT.LOAD_ERROR_TYPE[loadErrorKey];
+          if (loadErrorType) {
+            this.handleError(this.formatLoadError(target));
+            return;
+          } 
+        }
       }
+      // 过滤无效错误
+      event.message && this.handleError(
+        this.formatRuntimerError(
+          event.message,
+          event.filename,
+          event.lineno,
+          event.colno,
+          // event.error,
+        ),
+      );
     }, true); // 捕获
   }
   /**
@@ -69,7 +73,7 @@ class ErrorMonitor {
    * 当 Promise 被 reject 且没有 reject 处理器时触发
    */
   public registerUnhandledrejectionEvent(): void {
-    const { isFilterPromiseFunc } = this.params.error;
+    const isFilterPromiseFunc = this.params.error && this.params.error.isFilterPromiseFunc;
     window.addEventListener('unhandledrejection',(event: PromiseRejectionEvent): void => {
       // 处理响应数据，只抽取重要信息
       const { response } = event.reason;
@@ -94,8 +98,10 @@ class ErrorMonitor {
    * 录制用户行为
    */
   public recordPage(): void {
-    const { isOpen, src } = this.params.record;
-    if (!isOpen) { return; }
+    const record = this.params.record;
+    const isOpen = record && record.isOpen;
+    const src = record && record.src;
+    if (!isOpen || !src) { return; }
     const script = document.createElement('script');
     script.src = src;
     // 开始监控页面行为
@@ -150,8 +156,8 @@ class ErrorMonitor {
    * 白屏计算规则
    */
   private isWhiteScreen(): TypeWhiteScreen {
-    const visibles = [];
-    const nodes = [];       //遍历到的节点的关键信息，用于查明白屏原因
+    const visibles: HTMLElement[] = [];
+    const nodes: TypeWhiteHTMLNode[] = [];       //遍历到的节点的关键信息，用于查明白屏原因
     // 深度优先遍历子元素
     const dfs = (node: HTMLElement): void => {
       const tagName = node.tagName.toLowerCase();
@@ -211,7 +217,9 @@ class ErrorMonitor {
    * 监控页面奔溃情况
    */
   public monitorCrash(): void {
-    const { isOpen, validateFunc } = this.params.crash;
+    const crash = this.params.crash;
+    const isOpen = crash && crash.isOpen;
+    const validateFunc= crash && crash.validateFunc;
     if (!isOpen) { return; }
     const HEARTBEAT_INTERVAL = 5 * 1000; // 每五秒发一次心跳
     const crashHeartbeat = (): void => {
@@ -278,7 +286,7 @@ class ErrorMonitor {
      * MEDIA_ERR_SRC_NOT_SUPPORTED：表示由于不支持媒体资源格式而引发的错误（数值为 4）
      */
     if(errorTarget.error) {
-      const MEDIA_ERR = {
+      const MEDIA_ERR: Record<number, string> = {
         1: '用户取消操作',
         2: '网络错误',
         3: '解码错误',
@@ -287,8 +295,10 @@ class ErrorMonitor {
       const { code } = errorTarget.error;
       code && (desc.message = MEDIA_ERR[code]);
     }
+    const nodeName = errorTarget.nodeName.toUpperCase() as keyof typeof CONSTANT.LOAD_ERROR_TYPE;
+    const type = CONSTANT.LOAD_ERROR_TYPE[nodeName];
     return {
-      type: CONSTANT.LOAD_ERROR_TYPE[errorTarget.nodeName.toUpperCase()],
+      type,
       desc
       // stack: "no stack"
     };
