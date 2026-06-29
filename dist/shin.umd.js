@@ -1,5 +1,5 @@
 /*!
- * shin-monitor 1.7.1 (https://github.com/pwstrick/shin-monitor)
+ * shin-monitor 1.7.2 (https://github.com/pwstrick/shin-monitor)
  * API https://github.com/pwstrick/shin-monitor/blob/master/doc/api.md
  * Copyright 2017-2026 pwstrick. All Rights Reserved
  * Licensed under MIT (https://github.com/pwstrick/shin-monitor/blob/master/LICENSE)
