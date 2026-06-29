@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 14:21:36
- * @LastEditTime: 2026-06-25 14:30:51
+ * @LastEditTime: 2026-06-29 15:02:07
  * @Description: 监控各类错误
  * @FilePath: /web/shin-monitor/src/lib/error.ts
  */
@@ -214,6 +214,15 @@ class ErrorMonitor {
     }, this.handleCrashParams.bind(this));
   }
   /**
+   * 页面是否可见，包含属性兼容性判断
+   */
+  private isPageVisible(): boolean {
+    if (!('visibilityState' in document)) {
+      return true;
+    }
+    return document.visibilityState === 'visible';
+  }
+  /**
    * 监控页面奔溃情况
    */
   public monitorCrash(): void {
@@ -221,47 +230,73 @@ class ErrorMonitor {
     const isOpen = crash && crash.isOpen;
     const validateFunc= crash && crash.validateFunc;
     if (!isOpen) { return; }
-    const HEARTBEAT_INTERVAL = 5 * 1000; // 每五秒发一次心跳
+    const HEARTBEAT_INTERVAL = 2 * 1000; // 每2秒发一次心跳
+    const MAX_FAILURE_COUNT = 3;
+    let failureCount = 0;
     const crashHeartbeat = (): void => {
+      // 页面不可见时不检查，并清空失败次数
+      if (!this.isPageVisible()) {
+        failureCount = 0;
+        return;
+      }
+      let isFailed = false;
+      let prompt = '页面没有高度';
+
       // 是否自定义了规则
       if(validateFunc) {
         const result = validateFunc();
-        // 符合自定义的奔溃规则
-        if (result && !result.success) {
-          this.handleError({
-            type: CONSTANT.ERROR_CRASH,
-            desc: {
-              prompt: result.prompt,
-              url: location.href,
-            },
-          });
-          // 关闭定时器
-          clearInterval(timer);
+        // 自定义规则失败时先计数，不立即上报
+        if (result) {
+          isFailed = !result.success;
+          prompt = result.prompt || prompt;
         }
       } else {  
         // 兜底白屏算法，可根据自身业务定义
         const whiteObj = this.isWhiteScreen();
-        if(whiteObj.visibles.length > 0) {
-          return;
-        }
-        // 查询第一个div
-        const currentDiv = document.querySelector('div');
-        // 增加 html 字段是为了验证是否出现了误报
+        // 默认白屏规则也只记录本次失败
+        isFailed = whiteObj.visibles.length === 0;
+      }
+      // 本次正常，连续失败次数归零
+      if (!isFailed) {
+        failureCount = 0;
+        return;
+      }
+      // 累计失败次数
+      failureCount++;
+      // 连续失败未达到 3 次，不上报
+      if (failureCount < MAX_FAILURE_COUNT) {
+        return;
+      }
+      if (validateFunc) {
+        // 自定义业务规则：保持精简上报
         this.handleError({
           type: CONSTANT.ERROR_CRASH,
           desc: {
-            prompt: '页面没有高度',
-            url: location.href,
-            html: currentDiv ? removeQuote(currentDiv.innerHTML) : '',
-            fontSize: document.documentElement.style.fontSize,  // 根节点的字体大小
-            nodes: whiteObj.nodes
+            prompt,
+            url: location.href
           },
         });
-        clearInterval(timer);
+      } else {
+        // 达到阈值后，才收集信息并上报
+        const whiteObj = this.isWhiteScreen();
+        const currentDiv = document.querySelector('div');  //查询第一个div
+        this.handleError({
+          type: CONSTANT.ERROR_CRASH,
+          desc: {
+            prompt,
+            url: location.href,
+            html: currentDiv ? removeQuote(currentDiv.innerHTML).slice(0, 2000) : '',  //增加 html 字段是为了验证是否出现了误报
+            fontSize: document.documentElement.style.fontSize, //根节点的字体大小
+            nodes: whiteObj.nodes.slice(0, 50)  //限制节点数量，避免上报内容超过 8000 字符
+          },
+        });
       }
+      // 关闭定时器
+      clearInterval(timer);
     };
     const timer = setInterval(crashHeartbeat, HEARTBEAT_INTERVAL);
-    crashHeartbeat();     // 立即执行一次
+    // 废弃立即执行一次
+    // crashHeartbeat();     
     // 5分钟后自动取消定时器
     setTimeout((): void => {
       // 关闭定时器
