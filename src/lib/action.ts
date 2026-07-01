@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 14:24:20
- * @LastEditTime: 2026-06-30 16:03:41
+ * @LastEditTime: 2026-07-01 09:58:33
  * @Description: 用户行为监控
  * @FilePath: /web/shin-monitor/src/lib/action.ts
  */
@@ -463,7 +463,6 @@ class ActionMonitor {
             contentType.indexOf('json') >= 0 ||
             contentType.indexOf('xml') >= 0 ||
             contentType.indexOf('javascript') >= 0;
-
           // Content-Length 缺失时也不读取，避免未知大小的响应占用内存
           const canReadResponse = isTextResponse && contentLength > 0 && contentLength <= MAX_RESPONSE_BYTES;
           // 不读取响应体，只上报状态码、耗时等基础信息
