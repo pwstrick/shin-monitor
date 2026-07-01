@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 18:03:08
- * @LastEditTime: 2026-06-25 12:01:29
+ * @LastEditTime: 2026-06-30 15:10:47
  * @Description: 自定义的声明文件
  * @FilePath: /web/shin-monitor/src/typings.d.ts
  */
@@ -52,7 +52,7 @@ export interface TypeEvent {
 }
 // Ajax参数
 export interface TypeAjax {
-  isFilterSendFunc: ((req: TypeAjaxRequest) => boolean | null) | null; 
+  isFilterSendFunc: ((req: TypeAjaxFilterRequest) => boolean | null) | null; 
 }
 // 监控系统所有的参数
 export interface TypeShinParams {
@@ -159,6 +159,11 @@ export interface TypeSendParams {
   author?: string;
   fingerprint?: string;
   data: TypeErrorData | TypeAjaxData;
+}
+// XHR 和 Fetch 共用的过滤请求类型
+export interface TypeAjaxFilterRequest {
+  status: number;
+  ajax?: Partial<TypeAjaxDesc>;
 }
 /*************************************************************************
  * 性能类型

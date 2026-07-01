@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 10:17:17
- * @LastEditTime: 2026-06-25 14:22:10
+ * @LastEditTime: 2026-06-30 15:20:00
  * @Description: 入口，自动初始化
  * @FilePath: /web/shin-monitor/src/index.ts
  */
@@ -112,6 +112,7 @@ function setParams(params: TypeShinParams): TypeShinParams {
   action.injectRouter();    // 监听路由
   action.injectEvent();     // 监听事件
   action.injectAjax();      // 监听Ajax
+  action.injectFetch();     // 监听Fetch
   
   return combination;
 }

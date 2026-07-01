@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 10:17:17
- * @LastEditTime: 2026-06-29 15:06:24
+ * @LastEditTime: 2026-07-01 09:55:56
  * @Description: 变更日志
  * @FilePath: /web/shin-monitor/CHANGELOG.md
 -->
@@ -111,10 +111,10 @@
 * 计算首屏之前的资源总大小
 
 ## 1.6.1（2023-12-05）
-* 修复iOS没有停留时长
+* 修复 iOS 没有停留时长
 
 ## 1.6.2（2024-02-29）
-* 修复Cannot assign to read only property 'size' of object '#Blob'
+* 修复 Cannot assign to read only property 'size' of object '#Blob'
 
 ## 1.7.1（2026-06-25）
 * 增加 identityCustom 字段，传递业务身份标识，例如 userId
@@ -122,3 +122,6 @@
 
 ## 1.7.2（2026-06-29）
 * 修复1秒以上的慢接口误报的问题
+
+## 1.8.1（2026-07-01）
+* 增加对 Fetch 请求的监控

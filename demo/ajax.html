@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-13 16:32:08
- * @LastEditTime: 2023-06-16 16:10:35
+ * @LastEditTime: 2026-06-30 16:28:41
  * @Description: 监控Ajax
  * @FilePath: /web/shin-monitor/demo/ajax.html
 -->
@@ -30,8 +30,28 @@
     </script>
 </head>
 <body>
+    <input id="file" type="file">
+    <button id="upload">上传</button>
     <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
     <script>
+      document.getElementById('upload').addEventListener('click', async () => {
+        const input = document.getElementById('file');
+        const file = input.files[0];
+        if (!file) {
+          alert('请先选择文件');
+          return;
+        }
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('name', file.name);
+        const response = await fetch('http://localhost:3000/test/post',
+          {
+            method: 'POST',
+            body: formData,
+          },
+        );
+        console.log(await response.json());
+      });
       /**
        * 测试错误
        * Failed to read the 'responseText' property from 'XMLHttpRequest': 
@@ -49,12 +69,31 @@
       //   const textResponse = xhr.responseText;
       // };
       // xhr.send();
-      // 测试请求
+      // 测试ajax请求
       axios({
         url: './data.json',
         method: 'get',
         responseType: 'json',
       }).then(response => console.log(response.data))
+      axios({
+        url: 'http://localhost:3000/test/post',
+        method: 'POST',
+        responseType: 'json',
+        data: 'test'
+      })
+      // 测试Fetch请求
+      fetch('./data.json', {
+        method: 'GET',
+        headers: {
+          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVmODEyODhkMzU3OGJiMDA1YTc5Y2RjMSIsInVzZXJOYW1lIjoid2VuLnBpbmdAcmVsYS5tZSIsInJlYWxOYW1lIjoi5bmz5paHIiwiaWF0IjoxNzgyODA1Mzk3LCJleHAiOjE3ODI4NDg1OTd9.Gpm7HlR_G9jABCnD-ncYbGwvIdXUkuJJq1Nk84jxjA0',
+          'req-id': 'dsdsdsdere'
+        }
+      });
+      // 测试Fetch请求
+      fetch('http://localhost:3000/test/post', {
+        method: 'POST',
+        body: 'test'
+      });
     </script>
 </body>
 </html>
