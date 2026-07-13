@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 10:17:17
- * @LastEditTime: 2026-07-01 09:55:56
+ * @LastEditTime: 2026-07-13 17:11:40
  * @Description: 变更日志
  * @FilePath: /web/shin-monitor/CHANGELOG.md
 -->
@@ -125,3 +125,6 @@
 
 ## 1.8.1（2026-07-01）
 * 增加对 Fetch 请求的监控
+
+## 1.8.2（2026-07-13）
+* 修复循环上报错误的问题

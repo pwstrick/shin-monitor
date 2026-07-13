@@ -95,6 +95,21 @@ function bin2hex(s) {
     return o;
 }
 
+// 在 ActionMonitor 覆盖 window.fetch 之前保存原始 Fetch。
+// 监控数据使用原始 Fetch 上报，避免上报请求再次进入 Fetch 监控而形成递归。
+var nativeFetch = typeof window !== 'undefined' ? window.fetch : undefined;
+/**
+ * 使用原始 Fetch 发送监控数据。
+ * 监控服务不可用时直接丢弃数据，避免产生未处理的 Promise 拒绝或递归上报。
+ */
+var sendByNativeFetch = function (url, init) {
+    if (!nativeFetch) {
+        return;
+    }
+    nativeFetch.call(window, url, init).catch(function () {
+        // 监控上报失败不能影响业务，也不能继续上报本次失败。
+    });
+};
 var Http = /** @class */ (function () {
     function Http(params) {
         this.params = params;
@@ -184,7 +199,7 @@ var Http = /** @class */ (function () {
         var body = { m: m };
         callback && callback(data, body); // 自定义的参数处理回调
         // 如果修改headers，就会多一次OPTIONS预检请求
-        fetch(this.params.src, {
+        sendByNativeFetch(this.params.src, {
             method: 'POST',
             // headers: {
             //   'Content-Type': 'application/json',
@@ -244,7 +259,7 @@ var Http = /** @class */ (function () {
         if (this.params.rate && (this.params.rate >= this.rate) && this.params.pkey) {
             // 开启了录像得用 fetch 传输
             if (this.params.record && this.params.record.isSendInPerformance) {
-                fetch(this.params.psrc, {
+                sendByNativeFetch(this.params.psrc, {
                     method: 'POST',
                     body: str,
                 });
@@ -1852,7 +1867,7 @@ var PerformanceMonitor = /** @class */ (function () {
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2023-01-12 10:17:17
- * @LastEditTime: 2026-06-30 15:20:00
+ * @LastEditTime: 2026-07-01 09:58:41
  * @Description: 入口，自动初始化
  * @FilePath: /web/shin-monitor/src/index.ts
  */

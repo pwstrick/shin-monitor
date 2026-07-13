@@ -12,6 +12,23 @@ import { rounded, randomNum, bin2hex, CONSTANT } from '../utils';
 
 type ParamsCallback = (data: TypeSendParams, body: TypeSendBody) => void;
 
+// 在 ActionMonitor 覆盖 window.fetch 之前保存原始 Fetch。
+// 监控数据使用原始 Fetch 上报，避免上报请求再次进入 Fetch 监控而形成递归。
+const nativeFetch = typeof window !== 'undefined' ? window.fetch : undefined;
+
+/**
+ * 使用原始 Fetch 发送监控数据。
+ * 监控服务不可用时直接丢弃数据，避免产生未处理的 Promise 拒绝或递归上报。
+ */
+const sendByNativeFetch = (url: string, init: RequestInit): void => {
+  if (!nativeFetch) {
+    return;
+  }
+  nativeFetch.call(window, url, init).catch((): void => {
+    // 监控上报失败不能影响业务，也不能继续上报本次失败。
+  });
+};
+
 class Http {
   private params: TypeShinParams;   // 内部私有变量
   private rate?: number;             // 采样数
@@ -101,7 +118,7 @@ class Http {
     const body: TypeSendBody = { m };
     callback && callback(data, body);   // 自定义的参数处理回调
     // 如果修改headers，就会多一次OPTIONS预检请求
-    fetch(this.params.src, {
+    sendByNativeFetch(this.params.src, {
       method: 'POST',
       // headers: {
       //   'Content-Type': 'application/json',
@@ -158,7 +175,7 @@ class Http {
     if (this.params.rate && (this.params.rate >= this.rate) && this.params.pkey) {
       // 开启了录像得用 fetch 传输
       if(this.params.record && this.params.record.isSendInPerformance) {
-        fetch(this.params.psrc, {
+        sendByNativeFetch(this.params.psrc, {
           method: 'POST',
           body: str,
         });
